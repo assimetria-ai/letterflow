@@ -1161,3 +1161,164 @@ A: Yes, in production. Integrate virus scanning (ClamAV, etc.) before serving fi
 **Last Updated:** 2026-02-27  
 **Security Contact:** Viktor (Auditor)  
 **Fixed By:** Anton (Junior Developer)
+
+## Backup File with Historical Keys (Task #1097 - Viktor Audit 2026-02-27)
+
+### Vulnerability Description
+
+**Severity:** CRITICAL  
+**Category:** Cleartext Storage of Sensitive Information  
+**CWE:** CWE-798 (Use of Hard-coded Credentials), CWE-312 (Cleartext Storage of Sensitive Information)  
+**Affected File:** `server/.env.backup-insecure` (filesystem only, NOT in git history)  
+**Discovered:** 2026-02-27 by Viktor
+
+#### The Problem
+
+During Task #1020 (cryptographic key rotation), a backup file was created containing the old hardcoded JWT and encryption keys. While correctly excluded from git via `.gitignore`, the file remained on the filesystem as a security risk.
+
+**File Location:**
+```bash
+server/.env.backup-insecure
+```
+
+**File Contents:**
+```bash
+JWT_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n[Old 2048-bit RSA key]...
+JWT_PUBLIC_KEY=-----BEGIN PUBLIC KEY-----\n[Old 2048-bit RSA key]...
+ENCRYPT_KEY=0nrwHF1aZQIy5xuTM9rg5v8KNvPkrxpBCYKebZ00/rM=  # Old hardcoded
+ENCRYPT_IV=68ygEy8/4JkAS1dN+pq9VA==  # Old hardcoded
+```
+
+#### Why This is Critical
+
+Even though the file was never committed to git:
+- Old keys stored in **cleartext** on filesystem
+- Anyone with **filesystem access** can read them
+- Old keys can decrypt **historical data**
+- Old keys can forge **JWTs for old sessions**
+- Backup filename explicitly labeled "insecure"
+
+**Attack Scenario:**
+1. Attacker gains filesystem access (SSH, compromised app, etc.)
+2. Reads `server/.env.backup-insecure`
+3. Uses old JWT_PRIVATE_KEY to forge tokens for accounts
+4. Uses old ENCRYPT_KEY to decrypt historical sensitive data
+5. Key rotation security benefits completely undermined
+
+### The Fix
+
+**Solution:** Delete the file from filesystem immediately.
+
+```bash
+rm -f server/.env.backup-insecure
+```
+
+**Verification:**
+```bash
+# Confirm deletion
+ls -la server/.env*
+# Should NOT show .env.backup-insecure
+
+# Verify never in git history
+git log --all --full-history --oneline -- server/.env.backup-insecure
+# Should show no commits
+
+# Confirm .gitignore protection
+grep "backup-insecure" .gitignore
+# Should show: *.backup-insecure
+```
+
+### Best Practices for Key Rotation
+
+**When rotating cryptographic keys:**
+
+1. ✅ Generate new keys
+2. ✅ Update `.env` with new keys
+3. ✅ Test thoroughly
+4. ✅ Deploy new keys
+5. ✅ **Delete old keys immediately** ← Often forgotten!
+6. ✅ Document rotation date (not keys themselves)
+
+**Never:**
+- ❌ Create backup files with plaintext secrets
+- ❌ Keep old keys "just in case"
+- ❌ Store keys in source code or git
+- ❌ Email or share keys in cleartext
+- ❌ Use filenames that advertise insecurity
+
+**If backups are necessary:**
+- ✅ Use proper secrets management (Vault, AWS Secrets Manager)
+- ✅ Encrypt backup files with strong encryption
+- ✅ Store encrypted backups in secure location
+- ✅ Set expiration/rotation policies
+- ✅ Audit access logs
+
+### Downstream Products
+
+**URGENT:** All products forked from product-template must check and delete this file.
+
+**Check each product:**
+```bash
+# Nestora, Broadr, WaitlistKit, DropMagic, Brix
+cd /path/to/product/server
+ls -la .env.backup-insecure
+
+# If found, DELETE immediately
+rm -f .env.backup-insecure
+```
+
+### .gitignore Protection
+
+The `.gitignore` pattern `*.backup-insecure` prevents these files from being committed:
+
+```bash
+# .gitignore
+*.backup-insecure  # Block all backup files with this suffix
+```
+
+**This pattern:**
+- ✅ Prevented the file from entering git history (Task #1020)
+- ✅ Will block future accidental backups
+- ⚠️ Does NOT delete existing filesystem files
+
+### CVSS Analysis
+
+**Before Fix:**
+- Attack Vector: Local (AV:L) - Requires filesystem access
+- Attack Complexity: Low (AC:L)
+- Privileges Required: Low (PR:L)
+- User Interaction: None (UI:N)
+- Scope: Changed (S:C)
+- Confidentiality: High (C:H)
+- Integrity: High (I:H)
+- Availability: None (A:N)
+- **CVSS 3.1 Score: 8.2 (HIGH)**
+
+**After Fix:**
+- **CVSS Score: 0.0 (Resolved)**
+
+### FAQ
+
+**Q: Was this file committed to git?**  
+A: No. The `.gitignore` pattern `*.backup-insecure` successfully prevented it from entering version control.
+
+**Q: Do we need to rewrite git history?**  
+A: No. Since the file was never committed, no history rewrite is needed.
+
+**Q: Why create the backup file in the first place?**  
+A: It was created during key rotation as a safety measure, but should have been deleted immediately after verification.
+
+**Q: What if I need to restore old keys?**  
+A: You don't. Key rotation is permanent. Old keys should be destroyed, not archived.
+
+**Q: How do I verify my product doesn't have this file?**  
+A: Run: `ls -la server/.env.backup-insecure` in your product directory. If found, delete it.
+
+**Q: Can old keys still decrypt historical data?**  
+A: Yes, which is why they must be deleted everywhere. Consider re-encrypting historical data with new keys if necessary.
+
+---
+
+**Last Updated:** 2026-02-27  
+**Security Contact:** Viktor (Auditor)  
+**Fixed By:** Anton (Junior Developer)
