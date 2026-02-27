@@ -24,11 +24,11 @@ try {
   const envFilePath = './server/.env';
   let envFile = fs.readFileSync(envFilePath, 'utf8');
 
-  // Check if keys already exist AND have values (not empty)
-  const privateKeyExists = /JWT_PRIVATE_KEY=.+BEGIN.*PRIVATE KEY/.test(envFile);
-  const publicKeyExists = /JWT_PUBLIC_KEY=.+BEGIN PUBLIC KEY/.test(envFile);
-  const encryptKeyExists = /ENCRYPT_KEY=.+/.test(envFile);
-  const encryptIvExists = /ENCRYPT_IV=.+/.test(envFile);
+  // Check if keys already exist AND have real values (not the placeholder "<base64>" from .env.example)
+  const privateKeyExists = /JWT_PRIVATE_KEY=(?!.*<base64>).+BEGIN.*PRIVATE KEY/.test(envFile);
+  const publicKeyExists = /JWT_PUBLIC_KEY=(?!.*<base64>).+BEGIN PUBLIC KEY/.test(envFile);
+  const encryptKeyExists = /ENCRYPT_KEY=(?!.*<[^>]+>)[^=\s]+/.test(envFile);
+  const encryptIvExists = /ENCRYPT_IV=(?!.*<[^>]+>)[^=\s]+/.test(envFile);
 
   let newEnvFile = envFile;
   let keysGenerated = false;

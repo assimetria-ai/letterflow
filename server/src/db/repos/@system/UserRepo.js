@@ -28,13 +28,19 @@ const UserRepo = {
   },
 
   async update(id, fields) {
-    const sets = Object.entries(fields)
-      .filter(([, v]) => v !== undefined)
-      .map(([k], i) => `${k} = $${i + 2}`)
-      .join(', ')
-    const values = Object.values(fields).filter((v) => v !== undefined)
-    if (!sets) return this.findById(id)
-    return db.one(`UPDATE users SET ${sets}, updated_at = now() WHERE id = $1 RETURNING id, email, name, role`, [id, ...values])
+    // SECURITY: Whitelist allowed columns to prevent SQL injection
+    // DO NOT add 'email', 'password_hash', or system columns (id, created_at, updated_at)
+    const allowed = ['name', 'role', 'stripe_customer_id']
+    const entries = Object.entries(fields).filter(([k, v]) => allowed.includes(k) && v !== undefined)
+    if (!entries.length) return this.findById(id)
+    
+    const sets = entries.map(([k], i) => `${k} = $${i + 2}`).join(', ')
+    const values = entries.map(([, v]) => v)
+    
+    return db.one(
+      `UPDATE users SET ${sets}, updated_at = now() WHERE id = $1 RETURNING id, email, name, role`,
+      [id, ...values]
+    )
   },
 
   async search(query, { limit = 20 } = {}) {

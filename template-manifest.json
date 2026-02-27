@@ -169,6 +169,25 @@
       ]
     },
     {
+      "id": "devops-003",
+      "name": "@system Key-Gen + Env Bootstrap Command",
+      "category": "devops",
+      "status": "built",
+      "version": "1.0.0",
+      "description": "One-command project bootstrap: copies server/.env.example → server/.env and client/.env.example → client/.env (if absent), then generates an RSA 2048-bit keypair (JWT_PRIVATE_KEY / JWT_PUBLIC_KEY) for RS256 JWT signing and AES-256 symmetric keys (ENCRYPT_KEY / ENCRYPT_IV) for data-at-rest encryption. Idempotent — safe to re-run. Separate generate-keys script for key-only regeneration. bootstrap --force flag overwrites existing .env files.",
+      "files": [
+        "scripts/@system/dev/bootstrap.js",
+        "scripts/@system/dev/bootstrap-env.sh",
+        "scripts/@system/dev/generate-keys.js",
+        "package.json"
+      ],
+      "npmScripts": {
+        "bootstrap": "node scripts/@system/dev/bootstrap.js",
+        "bootstrap:force": "node scripts/@system/dev/bootstrap.js --force",
+        "generate-keys": "node scripts/@system/dev/generate-keys.js"
+      }
+    },
+    {
       "id": "misc-001",
       "name": "Admin Panel API",
       "category": "misc",
@@ -373,6 +392,18 @@
       "version": "1.1.0",
       "author": "frederico-junior",
       "changes": "Completed payments-001 Stripe checkout flow: full webhook handler (checkout.session.completed, subscription.updated/deleted, invoice.payment_failed/succeeded), cancel/uncancel endpoints, customer portal, /subscriptions/plans endpoint, stripe_customer_id migration, client stripe.ts API module, BillingPage (live subscription + plan selection), PricingPage (public), /pricing route added."
+    },
+    {
+      "date": "2026-02-26",
+      "version": "1.2.0",
+      "author": "frederico-junior",
+      "changes": "email-001 upgraded to v2.0.0: built pluggable adapter architecture. Resend native REST API adapter (adapters/resend.js) — uses Node 18 fetch, no SDK dependency, supports cc/bcc/reply-to/attachments, verify() health check. SMTP adapter (adapters/smtp.js) — nodemailer wrapper with connection pooling, configurable TLS, works with Resend SMTP relay + SendGrid + Mailgun etc. Email index.js refactored to clean provider-selection logic (resend > smtp > ses > console). Admin API: GET /api/email/verify endpoint added. 29 unit tests — all passing."
+    },
+    {
+      "date": "2026-02-27",
+      "version": "1.3.0",
+      "author": "frederico-junior",
+      "changes": "devops-003: @system key-gen + env bootstrap command. Three scripts: bootstrap.js (combined: copy .env.example → .env + generate keys), bootstrap-env.sh (env copy only), generate-keys.js (key-gen only). npm scripts: bootstrap, bootstrap:force, generate-keys. Generates RSA 2048-bit keypair (JWT_PRIVATE_KEY/JWT_PUBLIC_KEY) and AES-256 keys (ENCRYPT_KEY/ENCRYPT_IV). Idempotent — skips existing files/keys. README updated with bootstrap workflow. Manifest entry devops-003 added."
     }
   ]
 }
