@@ -43,6 +43,7 @@ router.get('/search', authenticate, async (req, res, next) => {
 
     const parsedLimit  = Math.min(parseInt(limit ?? '20', 10) || 20, 100)
     const parsedOffset = Math.max(parseInt(offset ?? '0', 10) || 0, 0)
+<<<<<<< HEAD
 
     // Validate sort rules: each must be "fieldname:asc" or "fieldname:desc" (SEC-1502)
     const SORT_RULE_RE = /^[\w.]+:(asc|desc)$/i
@@ -57,11 +58,19 @@ router.get('/search', authenticate, async (req, res, next) => {
     const safeFilters = filters ? String(filters) : undefined
 
     const attrs = fields ? fields.split(',').map((f) => f.trim()).filter(Boolean) : undefined
+=======
+    const sortRules    = sort ? sort.split(',').map((s) => s.trim()).filter(Boolean) : undefined
+    const attrs        = fields ? fields.split(',').map((f) => f.trim()).filter(Boolean) : undefined
+>>>>>>> 7158ae05375246b3ac391642ec0953872bf71416
 
     const result = await Search.search({
       index: index.trim(),
       query: String(q),
+<<<<<<< HEAD
       filters: safeFilters,
+=======
+      filters: filters ? String(filters) : undefined,
+>>>>>>> 7158ae05375246b3ac391642ec0953872bf71416
       sort:    sortRules,
       limit:   parsedLimit,
       offset:  parsedOffset,

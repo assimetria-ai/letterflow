@@ -5,10 +5,13 @@
   "scripts": {
     "build:railway": "cd client && npm install && npm run build && cp -r dist ../server/public && cd ../server && npm install",
     "start:railway": "node server/src/index.js",
+<<<<<<< HEAD
     "bootstrap": "node scripts/@system/dev/bootstrap.js",
     "bootstrap:force": "node scripts/@system/dev/bootstrap.js --force",
     "bootstrap-env": "bash scripts/@system/dev/bootstrap-env.sh",
     "bootstrap-env:force": "bash scripts/@system/dev/bootstrap-env.sh --force",
+=======
+>>>>>>> 7158ae05375246b3ac391642ec0953872bf71416
     "generate-keys": "node scripts/@system/dev/generate-keys.js",
     "test": "npm run test:unit && npm run test:api && npm run test:e2e",
     "test:unit": "cd server && npm test -- --testPathPattern=test/unit",
