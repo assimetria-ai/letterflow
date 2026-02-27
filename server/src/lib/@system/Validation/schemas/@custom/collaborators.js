@@ -6,6 +6,7 @@ const CollaboratorRole = z.enum(['admin', 'member', 'viewer'])
 const ListCollaboratorsQuery = z.object({
   status: z.enum(['pending', 'active', 'revoked']).optional(),
   role: CollaboratorRole.optional(),
+  all: z.enum(['true', 'false']).optional(), // Admin-only: list all collaborators
   limit: z.coerce.number().int().min(1).max(200).default(50),
   offset: z.coerce.number().int().min(0).default(0),
 })

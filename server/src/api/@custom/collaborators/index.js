@@ -20,17 +20,27 @@ const {
 
 const VALID_ROLES = ['admin', 'member', 'viewer']
 
-// GET /collaborators — list all collaborators
+// GET /collaborators — list collaborators (filtered by ownership)
+// SECURITY: Only return collaborators invited by the current user
+// Admins can see all collaborators by passing ?all=true
 router.get('/collaborators', authenticate, validate({ query: ListCollaboratorsQuery }), async (req, res, next) => {
   try {
-    const { status, role, limit, offset } = req.query
+    const { status, role, limit, offset, all } = req.query
+    const isAdmin = req.user.role === 'admin'
+    
+    // SECURITY: Regular users can only see their own invited collaborators
+    // Admins can see all if ?all=true is passed
+    const invited_by = (isAdmin && all === 'true') ? undefined : req.user.id
+    
     const collaborators = await CollaboratorRepo.findAll({
+      invited_by,
       status: status || undefined,
       role: role || undefined,
       limit: parseInt(limit, 10),
       offset: parseInt(offset, 10),
     })
     const total = await CollaboratorRepo.count({
+      invited_by,
       status: status || undefined,
       role: role || undefined,
     })
@@ -84,13 +94,22 @@ router.post('/collaborators', authenticate, validate({ body: InviteCollaboratorB
 })
 
 // PATCH /collaborators/:id/role — update a collaborator's role
+// SECURITY: Only allow updating collaborators invited by the current user
+// Admins can update any collaborator
 router.patch('/collaborators/:id/role', authenticate, validate({ params: CollaboratorIdParams, body: UpdateCollaboratorRoleBody }), async (req, res, next) => {
   try {
     const { id } = req.params
     const { role } = req.body
+    const isAdmin = req.user.role === 'admin'
 
     const collaborator = await CollaboratorRepo.findById(id)
     if (!collaborator) return res.status(404).json({ message: 'Collaborator not found' })
+    
+    // SECURITY: Check ownership - user must have invited this collaborator (unless admin)
+    if (!isAdmin && collaborator.invited_by !== req.user.id) {
+      return res.status(403).json({ message: 'Forbidden: You can only update collaborators you invited' })
+    }
+    
     if (collaborator.status === 'revoked') {
       return res.status(400).json({ message: 'Cannot update role of a revoked collaborator' })
     }
@@ -105,12 +124,20 @@ router.patch('/collaborators/:id/role', authenticate, validate({ params: Collabo
 })
 
 // DELETE /collaborators/:id — soft delete (revoke + mark deleted)
+// SECURITY: Only allow deleting collaborators invited by the current user
+// Admins can delete any collaborator
 router.delete('/collaborators/:id', authenticate, validate({ params: CollaboratorIdParams }), async (req, res, next) => {
   try {
     const { id } = req.params
+    const isAdmin = req.user.role === 'admin'
 
     const collaborator = await CollaboratorRepo.findById(id)
     if (!collaborator) return res.status(404).json({ message: 'Collaborator not found' })
+    
+    // SECURITY: Check ownership - user must have invited this collaborator (unless admin)
+    if (!isAdmin && collaborator.invited_by !== req.user.id) {
+      return res.status(403).json({ message: 'Forbidden: You can only delete collaborators you invited' })
+    }
 
     const deleted = await CollaboratorRepo.softDelete(id)
     logger.info({ collaboratorId: id, removedBy: req.user.id }, 'collaborator soft-deleted')
@@ -121,11 +148,19 @@ router.delete('/collaborators/:id', authenticate, validate({ params: Collaborato
   }
 })
 
-// GET /collaborators/deleted — list soft-deleted collaborators (admin only)
+// GET /collaborators/deleted — list soft-deleted collaborators
+// SECURITY: Only return deleted collaborators invited by the current user
+// Admins can see all deleted collaborators
 router.get('/collaborators/deleted', authenticate, validate({ query: PaginationQuery }), async (req, res, next) => {
   try {
     const { limit, offset } = req.query
+    const isAdmin = req.user.role === 'admin'
+    
+    // SECURITY: Regular users can only see their own deleted collaborators
+    const invited_by = isAdmin ? undefined : req.user.id
+    
     const collaborators = await CollaboratorRepo.findDeleted({
+      invited_by,
       limit: parseInt(limit, 10),
       offset: parseInt(offset, 10),
     })
@@ -136,13 +171,21 @@ router.get('/collaborators/deleted', authenticate, validate({ query: PaginationQ
 })
 
 // POST /collaborators/:id/restore — restore a soft-deleted collaborator
+// SECURITY: Only allow restoring collaborators invited by the current user
+// Admins can restore any collaborator
 router.post('/collaborators/:id/restore', authenticate, validate({ params: CollaboratorIdParams }), async (req, res, next) => {
   try {
     const { id } = req.params
+    const isAdmin = req.user.role === 'admin'
 
     const collaborator = await CollaboratorRepo.findByIdIncludingDeleted(id)
     if (!collaborator) return res.status(404).json({ message: 'Collaborator not found' })
     if (!collaborator.deleted_at) return res.status(400).json({ message: 'Collaborator is not deleted' })
+    
+    // SECURITY: Check ownership - user must have invited this collaborator (unless admin)
+    if (!isAdmin && collaborator.invited_by !== req.user.id) {
+      return res.status(403).json({ message: 'Forbidden: You can only restore collaborators you invited' })
+    }
 
     const restored = await CollaboratorRepo.restore(id)
     logger.info({ collaboratorId: id, restoredBy: req.user.id }, 'collaborator restored')

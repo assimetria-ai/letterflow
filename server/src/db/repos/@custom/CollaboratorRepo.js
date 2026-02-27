@@ -1,12 +1,14 @@
 const db = require('../../../lib/@system/PostgreSQL')
 
 const CollaboratorRepo = {
-  async findAll({ status, role, limit = 50, offset = 0, include_deleted = false } = {}) {
+  async findAll({ invited_by, status, role, limit = 50, offset = 0, include_deleted = false } = {}) {
     const conditions = []
     const values = []
     let idx = 1
 
     if (!include_deleted) conditions.push('deleted_at IS NULL')
+    // SECURITY: Filter by invited_by for ownership checks
+    if (invited_by !== undefined) { conditions.push(`invited_by = $${idx++}`); values.push(invited_by) }
     if (status) { conditions.push(`status = $${idx++}`); values.push(status) }
     if (role) { conditions.push(`role = $${idx++}`); values.push(role) }
 
@@ -24,12 +26,14 @@ const CollaboratorRepo = {
     )
   },
 
-  async count({ status, role, include_deleted = false } = {}) {
+  async count({ invited_by, status, role, include_deleted = false } = {}) {
     const conditions = []
     const values = []
     let idx = 1
 
     if (!include_deleted) conditions.push('deleted_at IS NULL')
+    // SECURITY: Filter by invited_by for ownership checks
+    if (invited_by !== undefined) { conditions.push(`invited_by = $${idx++}`); values.push(invited_by) }
     if (status) { conditions.push(`status = $${idx++}`); values.push(status) }
     if (role) { conditions.push(`role = $${idx++}`); values.push(role) }
 
@@ -115,14 +119,26 @@ const CollaboratorRepo = {
     )
   },
 
-  async findDeleted({ limit = 50, offset = 0 } = {}) {
+  async findDeleted({ invited_by, limit = 50, offset = 0 } = {}) {
+    const conditions = ['deleted_at IS NOT NULL']
+    const values = []
+    let idx = 1
+    
+    // SECURITY: Filter by invited_by for ownership checks
+    if (invited_by !== undefined) {
+      conditions.push(`invited_by = $${idx++}`)
+      values.push(invited_by)
+    }
+    
+    values.push(limit, offset)
+    
     return db.any(
-      `SELECT id, email, name, role, status, user_id, created_at, updated_at, deleted_at
+      `SELECT id, email, name, role, status, invited_by, user_id, created_at, updated_at, deleted_at
        FROM collaborators
-       WHERE deleted_at IS NOT NULL
+       WHERE ${conditions.join(' AND ')}
        ORDER BY deleted_at DESC
-       LIMIT $1 OFFSET $2`,
-      [limit, offset],
+       LIMIT $${idx++} OFFSET $${idx}`,
+      values,
     )
   },
 

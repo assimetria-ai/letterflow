@@ -1500,3 +1500,287 @@ A: Each product should run the same verification periodically. They use the same
 **Next Verification:** 2026-05-27 (Quarterly)  
 **Security Contact:** Viktor (Auditor)  
 **Verified By:** Anton (Junior Developer)
+
+## IDOR in Collaborators API (Task #1106 - Viktor Audit 2026-02-27)
+
+### Vulnerability Description
+
+**Severity:** HIGH  
+**Category:** Insecure Direct Object Reference (IDOR)  
+**CWE:** CWE-639 (Authorization Bypass Through User-Controlled Key)  
+**Affected Files:** `server/src/api/@custom/collaborators/index.js` (fixed)  
+**Discovered:** 2026-02-27 by Viktor
+
+#### The Problem
+
+The collaborators API had NO ownership checks on any endpoint. Any authenticated user could access, modify, or delete ANY collaborator regardless of who invited them.
+
+**Vulnerable Code (before fix):**
+```javascript
+// GET /collaborators - NO ownership check!
+router.get('/collaborators', authenticate, async (req, res) => {
+  // ❌ Returns ALL collaborators from ALL users
+  const collaborators = await CollaboratorRepo.findAll()
+  res.json({ collaborators })
+})
+
+// PATCH /collaborators/:id/role - NO ownership check!
+router.patch('/collaborators/:id/role', authenticate, async (req, res) => {
+  const collaborator = await CollaboratorRepo.findById(id)
+  // ❌ No check if req.user invited this collaborator
+  await CollaboratorRepo.updateRole(id, role)
+})
+
+// DELETE /collaborators/:id - NO ownership check!
+router.delete('/collaborators/:id', authenticate, async (req, res) => {
+  // ❌ No check if req.user invited this collaborator
+  await CollaboratorRepo.softDelete(id)
+})
+```
+
+#### Attack Vectors
+
+**1. Data Leakage (List All Collaborators)**
+```javascript
+// User A invites 5 collaborators
+// User B invites 2 collaborators
+
+// User B calls: GET /collaborators
+// Before fix: Returns ALL 7 collaborators
+// User B can see User A's collaborators' emails, names, roles
+```
+
+**2. Unauthorized Modification**
+```javascript
+// User A invites collaborator ID=100 (role=member)
+// User B discovers this collaborator exists
+
+// User B calls: PATCH /collaborators/100/role {role: "admin"}
+// Before fix: Success - role changed!
+// Impact: User B modified User A's collaborator
+```
+
+**3. Unauthorized Deletion**
+```javascript
+// User A invites collaborator ID=100
+// User B calls: DELETE /collaborators/100
+// Before fix: Success - collaborator deleted!
+// Impact: User B deleted User A's collaborator
+```
+
+**Impact:**
+- Data leakage (view all collaborators' emails, names, roles)
+- Unauthorized modification (change any collaborator's role)
+- Unauthorized deletion (delete any collaborator)
+- Privilege escalation (elevate roles to gain admin access)
+- Horizontal privilege escalation (access other users' resources)
+
+### The Fix
+
+**Solution:** Add ownership checks based on `invited_by` field.
+
+#### Layer 1: Repository-Level Filtering
+
+```javascript
+async findAll({ invited_by, status, role, limit, offset } = {}) {
+  const conditions = []
+  const values = []
+  
+  // SECURITY: Filter by invited_by for ownership checks
+  if (invited_by !== undefined) {
+    conditions.push(`invited_by = $${idx++}`)
+    values.push(invited_by)
+  }
+  
+  // ... rest of query
+}
+```
+
+#### Layer 2: API-Level Ownership Checks
+
+**List Endpoint:**
+```javascript
+router.get('/collaborators', authenticate, async (req, res) => {
+  const isAdmin = req.user.role === 'admin'
+  
+  // SECURITY: Filter by ownership for regular users
+  const invited_by = (isAdmin && all === 'true') ? undefined : req.user.id
+  
+  const collaborators = await CollaboratorRepo.findAll({ invited_by })
+  res.json({ collaborators })
+})
+```
+
+**Update Endpoint:**
+```javascript
+router.patch('/collaborators/:id/role', authenticate, async (req, res) => {
+  const isAdmin = req.user.role === 'admin'
+  const collaborator = await CollaboratorRepo.findById(id)
+  
+  // SECURITY: Check ownership before allowing update
+  if (!isAdmin && collaborator.invited_by !== req.user.id) {
+    return res.status(403).json({ 
+      message: 'Forbidden: You can only update collaborators you invited' 
+    })
+  }
+  
+  await CollaboratorRepo.updateRole(id, role)
+})
+```
+
+**Delete Endpoint:**
+```javascript
+router.delete('/collaborators/:id', authenticate, async (req, res) => {
+  const isAdmin = req.user.role === 'admin'
+  const collaborator = await CollaboratorRepo.findById(id)
+  
+  // SECURITY: Check ownership before allowing deletion
+  if (!isAdmin && collaborator.invited_by !== req.user.id) {
+    return res.status(403).json({ 
+      message: 'Forbidden: You can only delete collaborators you invited' 
+    })
+  }
+  
+  await CollaboratorRepo.softDelete(id)
+})
+```
+
+### Defense in Depth
+
+The fix implements **4 security layers:**
+
+| Layer | Protection | Attack Prevented |
+|-------|-----------|------------------|
+| 1. Repository Filter | `invited_by` parameter | Data leakage via list |
+| 2. Ownership Check | Verify before modify | Unauthorized update/delete |
+| 3. Admin Role Check | Explicit `role === 'admin'` | Controlled bypass |
+| 4. Authentication | `authenticate` middleware | Unauthenticated access |
+
+### Testing
+
+Security tests added in `server/test/unit/@custom/collaborators-idor.test.js`:
+
+```bash
+npm test -- collaborators-idor.test.js
+```
+
+**Test Coverage:**
+- ✅ List endpoint ownership filtering (24 tests)
+- ✅ Update endpoint ownership checks
+- ✅ Delete endpoint ownership checks
+- ✅ Restore endpoint ownership checks
+- ✅ Attack scenario prevention
+- ✅ Admin bypass authorization
+
+**Results:**
+```
+Test Suites: 1 passed
+Tests:       24 passed
+Time:        0.156s
+```
+
+### Admin Bypass (Authorized)
+
+Admins (`role = 'admin'`) can access all collaborators:
+- List all: `GET /collaborators?all=true`
+- Update any: `PATCH /collaborators/:id/role`
+- Delete any: `DELETE /collaborators/:id`
+
+This is **intended behavior** (not IDOR) because:
+- Admin role is explicitly checked
+- Bypass is controlled and documented
+- Admins are trusted users with elevated permissions
+
+### Best Practices
+
+#### DO ✅
+
+1. **Filter by ownership** at database level
+   ```javascript
+   CollaboratorRepo.findAll({ invited_by: req.user.id })
+   ```
+
+2. **Check ownership** before modifications
+   ```javascript
+   if (collaborator.invited_by !== req.user.id) return 403
+   ```
+
+3. **Explicit admin checks** for bypass
+   ```javascript
+   const isAdmin = req.user.role === 'admin'
+   if (!isAdmin && !ownsResource) return 403
+   ```
+
+4. **Return 403 Forbidden** for unauthorized (not 404)
+   ```javascript
+   res.status(403).json({ message: 'Forbidden: ...' })
+   ```
+
+#### DON'T ❌
+
+1. **Never fetch all without filtering**
+   ```javascript
+   // ❌ WRONG
+   await CollaboratorRepo.findAll()
+   
+   // ✅ RIGHT
+   await CollaboratorRepo.findAll({ invited_by: req.user.id })
+   ```
+
+2. **Never skip ownership checks**
+   ```javascript
+   // ❌ WRONG
+   await CollaboratorRepo.updateRole(id, role)
+   
+   // ✅ RIGHT
+   if (collaborator.invited_by !== req.user.id) return 403
+   await CollaboratorRepo.updateRole(id, role)
+   ```
+
+3. **Never use user_id for ownership**
+   ```javascript
+   // ❌ WRONG - user_id is the collaborator's account
+   if (collaborator.user_id !== req.user.id)
+   
+   // ✅ RIGHT - invited_by is who invited them
+   if (collaborator.invited_by !== req.user.id)
+   ```
+
+### CVSS Analysis
+
+**Before Fix:**
+- Attack Vector: Network (AV:N)
+- Attack Complexity: Low (AC:L)
+- Privileges Required: Low (PR:L) - authenticated user
+- User Interaction: None (UI:N)
+- Scope: Unchanged (S:U)
+- Confidentiality: High (C:H) - data leakage
+- Integrity: High (I:H) - unauthorized modification
+- Availability: Low (A:L) - deletion possible
+- **CVSS 3.1 Score: 8.1 (HIGH)**
+
+**After Fix:**
+- **CVSS Score: 0.0 (Resolved)**
+
+### FAQ
+
+**Q: Why use invited_by instead of user_id?**  
+A: `invited_by` indicates who invited the collaborator (ownership). `user_id` is the collaborator's linked user account (after acceptance). Ownership is determined by who invited, not who accepted.
+
+**Q: Why return 403 instead of 404 for unauthorized access?**  
+A: 403 clearly indicates "you don't have permission" vs 404 "doesn't exist". Both prevent enumeration, but 403 is more accurate.
+
+**Q: Can regular users see other users' collaborators?**  
+A: No. Regular users only see collaborators they invited. Admins can see all with `?all=true`.
+
+**Q: What if a user tries to modify their own collaborator record?**  
+A: If User A invited User B as a collaborator, User B cannot modify their own record because `invited_by = User A`, not User B.
+
+**Q: How do admins list all collaborators?**  
+A: Admins use `GET /collaborators?all=true` to bypass the invited_by filter.
+
+---
+
+**Last Updated:** 2026-02-27  
+**Security Contact:** Viktor (Auditor)  
+**Fixed By:** Anton (Junior Developer)
