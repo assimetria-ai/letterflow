@@ -11,6 +11,9 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    // Bind to localhost only — prevents dev server from being reachable from
+    // external networks. Set VITE_HOST=0.0.0.0 only when required (Docker/WSL).
+    host: process.env.VITE_HOST || '127.0.0.1',
     proxy: {
       '/api': {
         target: 'http://localhost:4000',

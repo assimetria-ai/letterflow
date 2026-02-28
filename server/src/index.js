@@ -40,6 +40,10 @@ const { connectPool: connectPostgres, disconnectPool: disconnectPostgres } = req
 const { scheduler } = require('./scheduler/tasks/@system')
 
 const PORT = process.env.PORT ?? 4000
+// In production (Railway), bind to 0.0.0.0 so Railway can route traffic.
+// In development, bind to localhost only to prevent external access.
+const BIND_HOST = process.env.BIND_HOST ||
+  (process.env.NODE_ENV === 'production' ? '0.0.0.0' : '127.0.0.1')
 
 async function start() {
   await connectPostgres()
@@ -48,8 +52,8 @@ async function start() {
   // ── Scheduler ──────────────────────────────────────────────────────────
   await scheduler.init()
 
-  const server = app.listen(PORT, () => {
-    logger.info({ port: PORT, env: process.env.NODE_ENV ?? 'development' }, 'server started')
+  const server = app.listen(PORT, BIND_HOST, () => {
+    logger.info({ port: PORT, host: BIND_HOST, env: process.env.NODE_ENV ?? 'development' }, 'server started')
   })
 
   // ── Graceful shutdown ──────────────────────────────────────────────────

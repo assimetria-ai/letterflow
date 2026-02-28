@@ -24,7 +24,8 @@ services:
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
     ports:
-      - "${DB_PORT:-5432}:5432"
+      # Bind to localhost only — internal Docker network is used for app access
+      - "127.0.0.1:${DB_PORT:-5432}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -42,7 +43,8 @@ services:
     restart: unless-stopped
     command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
     ports:
-      - "${REDIS_PORT:-6379}:6379"
+      # Bind to localhost only — internal Docker network is used for app access
+      - "127.0.0.1:${REDIS_PORT:-6379}:6379"
     volumes:
       - redisdata:/data
     networks:
@@ -67,7 +69,8 @@ services:
       REDIS_URL: redis://redis:6379
       JWT_SECRET: ${JWT_SECRET:-changeme-in-production}
     ports:
-      - "${PORT:-4000}:4000"
+      # Bind to localhost only — accessed externally via client proxy or nginx
+      - "127.0.0.1:${PORT:-4000}:4000"
     depends_on:
       db:
         condition: service_healthy
@@ -92,7 +95,8 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - "${CLIENT_PORT:-5173}:5173"
+      # Bind to localhost only — use nginx or reverse proxy for external access
+      - "127.0.0.1:${CLIENT_PORT:-5173}:5173"
     volumes:
       - ./client:/app
       - /app/node_modules
