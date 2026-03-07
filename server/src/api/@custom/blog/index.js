@@ -5,6 +5,14 @@ const express = require('express')
 const router = express.Router()
 const { authenticate, requireAdmin } = require('../../../lib/@system/Helpers/auth')
 const BlogPostRepo = require('../../../db/repos/@custom/BlogPostRepo')
+const { validate } = require('../../../lib/@system/Validation')
+const {
+  CreateBlogPostBody,
+  UpdateBlogPostBody,
+  BlogPostIdParams,
+  BlogPostSlugParams,
+  ListBlogPostsQuery,
+} = require('../../../lib/@custom/Validation/schemas/blog')
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -22,7 +30,7 @@ function estimateReadingTime(content) {
 }
 
 // ── GET /api/blog — list published posts (public) ────────────────────────────
-router.get('/blog', async (req, res, next) => {
+router.get('/blog', validate({ query: ListBlogPostsQuery }), async (req, res, next) => {
   try {
     const { category, limit = 50, offset = 0 } = req.query
     const posts = await BlogPostRepo.findAll({
@@ -39,7 +47,7 @@ router.get('/blog', async (req, res, next) => {
 })
 
 // ── GET /api/blog/admin — list all posts (admin) ─────────────────────────────
-router.get('/blog/admin', authenticate, requireAdmin, async (req, res, next) => {
+router.get('/blog/admin', authenticate, requireAdmin, validate({ query: ListBlogPostsQuery }), async (req, res, next) => {
   try {
     const { status, category, limit = 100, offset = 0 } = req.query
     const posts = await BlogPostRepo.findAll({
@@ -59,7 +67,7 @@ router.get('/blog/admin', authenticate, requireAdmin, async (req, res, next) => 
 })
 
 // ── GET /api/blog/:slug — single published post (public) ─────────────────────
-router.get('/blog/:slug', async (req, res, next) => {
+router.get('/blog/:slug', validate({ params: BlogPostSlugParams }), async (req, res, next) => {
   try {
     const post = await BlogPostRepo.findBySlug(req.params.slug)
     if (!post || post.status !== 'published') {
@@ -72,12 +80,10 @@ router.get('/blog/:slug', async (req, res, next) => {
 })
 
 // ── POST /api/blog — create post (admin) ─────────────────────────────────────
-router.post('/blog', authenticate, requireAdmin, async (req, res, next) => {
+router.post('/blog', authenticate, requireAdmin, validate({ body: CreateBlogPostBody }), async (req, res, next) => {
   try {
     const { title, excerpt, content, category, author, tags, cover_image, status } = req.body
 
-    if (!title || typeof title !== 'string' || !title.trim()) {
-      return res.status(400).json({ message: 'title is required' })
     }
 
     const baseSlug = slugify(title.trim())
@@ -110,7 +116,7 @@ router.post('/blog', authenticate, requireAdmin, async (req, res, next) => {
 })
 
 // ── PATCH /api/blog/:id — update post (admin) ────────────────────────────────
-router.patch('/blog/:id', authenticate, requireAdmin, async (req, res, next) => {
+router.patch('/blog/:id', authenticate, requireAdmin, validate({ params: BlogPostIdParams, body: UpdateBlogPostBody }), async (req, res, next) => {
   try {
     const post = await BlogPostRepo.findById(req.params.id)
     if (!post) return res.status(404).json({ message: 'Post not found' })
@@ -143,7 +149,7 @@ router.patch('/blog/:id', authenticate, requireAdmin, async (req, res, next) => 
 })
 
 // ── POST /api/blog/:id/publish — publish post (admin) ────────────────────────
-router.post('/blog/:id/publish', authenticate, requireAdmin, async (req, res, next) => {
+router.post('/blog/:id/publish', authenticate, requireAdmin, validate({ params: BlogPostIdParams }), async (req, res, next) => {
   try {
     const post = await BlogPostRepo.findById(req.params.id)
     if (!post) return res.status(404).json({ message: 'Post not found' })
@@ -155,7 +161,7 @@ router.post('/blog/:id/publish', authenticate, requireAdmin, async (req, res, ne
 })
 
 // ── POST /api/blog/:id/unpublish — revert to draft (admin) ───────────────────
-router.post('/blog/:id/unpublish', authenticate, requireAdmin, async (req, res, next) => {
+router.post('/blog/:id/unpublish', authenticate, requireAdmin, validate({ params: BlogPostIdParams }), async (req, res, next) => {
   try {
     const post = await BlogPostRepo.findById(req.params.id)
     if (!post) return res.status(404).json({ message: 'Post not found' })
@@ -167,7 +173,7 @@ router.post('/blog/:id/unpublish', authenticate, requireAdmin, async (req, res, 
 })
 
 // ── DELETE /api/blog/:id — permanently delete post (admin) ───────────────────
-router.delete('/blog/:id', authenticate, requireAdmin, async (req, res, next) => {
+router.delete('/blog/:id', authenticate, requireAdmin, validate({ params: BlogPostIdParams }), async (req, res, next) => {
   try {
     const post = await BlogPostRepo.findById(req.params.id)
     if (!post) return res.status(404).json({ message: 'Post not found' })
