@@ -17,10 +17,12 @@ const app = express()
 // infrastructure health probes with no Origin header reach them without triggering
 // CORS rejection. These are the only paths permitted to bypass CORS in production.
 //
-// Both /health and /healthz are provided for compatibility:
+// Three health endpoints are provided for compatibility:
 // - /health: Standard REST convention
+// - /api/health: API-namespaced health endpoint
 // - /healthz: Kubernetes/GKE convention
 app.get('/health', (_req, res) => res.status(200).json({ status: 'ok' }))
+app.get('/api/health', (_req, res) => res.status(200).json({ status: 'ok' }))
 app.get('/healthz', (_req, res) => res.status(200).json({ status: 'ok' }))
 
 app.use(securityHeaders)
