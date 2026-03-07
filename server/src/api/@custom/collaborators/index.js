@@ -16,7 +16,7 @@ const {
   UpdateCollaboratorRoleBody,
   CollaboratorIdParams,
   PaginationQuery,
-} = require('../../../lib/@system/Validation/schemas/@custom/collaborators')
+} = require('../../../lib/@custom/Validation/schemas/@custom/collaborators')
 
 const VALID_ROLES = ['admin', 'member', 'viewer']
 

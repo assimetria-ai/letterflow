@@ -4,7 +4,7 @@ const router = express.Router()
 const { authenticate } = require('../../../lib/@system/Helpers/auth')
 const BrandRepo = require('../../../db/repos/@custom/BrandRepo')
 const { validate } = require('../../../lib/@system/Validation')
-const { CreateBrandBody, UpdateBrandBody, UploadLogoBody, BrandIdParams, PaginationQuery } = require('../../../lib/@system/Validation/schemas/@custom/brands')
+const { CreateBrandBody, UpdateBrandBody, UploadLogoBody, BrandIdParams, PaginationQuery } = require('../../../lib/@custom/Validation/schemas/@custom/brands')
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 

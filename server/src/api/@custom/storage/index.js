@@ -14,7 +14,7 @@ const S3 = require('../../../lib/@system/AWS/S3')
 const FileUploadRepo = require('../../../db/repos/@custom/FileUploadRepo')
 const logger = require('../../../lib/@system/Logger')
 const { validate } = require('../../../lib/@system/Validation')
-const { PresignBody, FileIdParams, ConfirmUploadBody } = require('../../../lib/@system/Validation/schemas/@custom/storage')
+const { PresignBody, FileIdParams, ConfirmUploadBody } = require('../../../lib/@custom/Validation/schemas/@custom/storage')
 
 // ── Allowed MIME types (restrict to safe set) ─────────────────────────────────
 
