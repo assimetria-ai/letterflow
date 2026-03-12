@@ -56,6 +56,7 @@ COPY --from=server-deps /app/server/node_modules ./server/node_modules
 
 # Server source
 COPY server/src/ ./server/src/
+COPY server/scripts/ ./server/scripts/
 COPY server/package*.json ./server/
 
 # Built frontend assets (served by Express as static files or a CDN)
