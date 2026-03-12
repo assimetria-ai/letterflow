@@ -243,9 +243,9 @@ export default {
         chunkFilename: 'css/[name].[contenthash:8].chunk.css',
       }),
 
-    // TypeScript type checking in a separate process (non-blocking)
-    new ForkTsCheckerWebpackPlugin({
-      async: isDev,
+    // TypeScript type checking in a separate process (dev only; Babel handles transpilation in prod)
+    isDev && new ForkTsCheckerWebpackPlugin({
+      async: true,
       typescript: {
         configFile: path.resolve(__dirname, 'tsconfig.json'),
       },
