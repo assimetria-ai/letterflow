@@ -8,16 +8,27 @@ const alertVariants = cva(
   'relative flex items-start gap-3 rounded-lg border p-4 text-sm',
   {
     variants: {
-      variant },
-    defaultVariants }
+      variant: {
+        default: 'border-border bg-background text-foreground',
+        info: 'border-blue-200 bg-blue-50 text-blue-900',
+        success: 'border-green-200 bg-green-50 text-green-900',
+        warning: 'border-yellow-200 bg-yellow-50 text-yellow-900',
+        destructive: 'border-red-200 bg-red-50 text-red-900',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+    },
+  }
 )
 
 const ICONS = {
-  default,
-  info,
-  success,
-  warning,
-  destructive }
+  default: Info,
+  info: Info,
+  success: CheckCircle2,
+  warning: AlertTriangle,
+  destructive: AlertCircle,
+}
 
 
 export function Alert({ className, variant = 'default', title, dismissible, children, ...props }) {
