@@ -158,11 +158,10 @@ export default {
     rules: [
       // Disable fullySpecified for ESM imports (allows omitting .jsx/.js extensions)
       {
-        test: /\.m?js/,
-        resolve: {
-          fullySpecified: false,
-        },
+        test: /\.m?[jt]sx?$/,
+        resolve: { fullySpecified: false },
       },
+
       // TypeScript / TSX / JSX
       {
         test: /\.[jt]sx?$/,
@@ -250,19 +249,33 @@ export default {
         chunkFilename: 'css/[name].[contenthash:8].chunk.css',
       }),
 
-    // TypeScript type checking in a separate process (dev only; Babel handles transpilation in prod)
-    isDev && new ForkTsCheckerWebpackPlugin({
-      async: true,
-      typescript: {
-        configFile: path.resolve(__dirname, 'tsconfig.json'),
-      },
-    }),
+    // TypeScript type checking in a separate process — dev only.
+    isDev &&
+      new ForkTsCheckerWebpackPlugin({
+        async: true,
+        typescript: {
+          configFile: path.resolve(__dirname, 'tsconfig.json'),
+        },
+      }),
 
-    // Environment variables available in browser bundle
+    // Environment variables available in browser bundle.
+    // import.meta.env is injected as a full object literal so both dotted access
+    // (import.meta.env.VITE_API_URL) and dynamic bracket access
+    // (import.meta.env[key]) work correctly under webpack (Vite-style patterns).
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(
         isDev ? 'development' : 'production'
       ),
+      'import.meta.env': JSON.stringify({
+        VITE_API_URL: process.env.VITE_API_URL || '',
+        VITE_APP_URL: process.env.VITE_APP_URL || '',
+        VITE_APP_VERSION: process.env.VITE_APP_VERSION || '0.0.0',
+        VITE_ERROR_TRACKING_DSN: process.env.VITE_ERROR_TRACKING_DSN || '',
+        VITE_STRIPE_PUBLISHABLE_KEY: process.env.VITE_STRIPE_PUBLISHABLE_KEY || '',
+        PROD: !isDev,
+        DEV: isDev,
+        MODE: isDev ? 'development' : 'production',
+      }),
     }),
 
     // ─── Compression ──────────────────────────────────────────────────────
