@@ -156,6 +156,13 @@ export default {
   // ─── Module Rules ────────────────────────────────────────────────────────────
   module: {
     rules: [
+      // Disable fullySpecified for ESM imports (allows omitting .jsx/.js extensions)
+      {
+        test: /\.m?js/,
+        resolve: {
+          fullySpecified: false,
+        },
+      },
       // TypeScript / TSX / JSX
       {
         test: /\.[jt]sx?$/,
