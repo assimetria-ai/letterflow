@@ -18,7 +18,7 @@
 
 # ── Shared base ───────────────────────────────────────────────────────────────
 FROM node:20-alpine AS base
-ARG CACHEBUST=2
+ARG CACHEBUST=3
 RUN apk add --no-cache tini postgresql-client
 
 # ── Stage 1: server production dependencies ───────────────────────────────────
@@ -65,6 +65,12 @@ COPY @custom/ ./@custom/
 # Built frontend assets (served by Express as static files or a CDN)
 # Server looks for static files at server/src/../public = server/public
 COPY --from=client-build /app/client/dist ./server/public
+
+# Copy @custom directory (product-specific code)
+COPY @custom/ ./@custom/
+
+# Symlink server node_modules at root so @custom/ modules can resolve deps
+RUN ln -s /app/server/node_modules /app/node_modules
 
 RUN chown -R appuser:appgroup /app
 USER appuser
