@@ -85,8 +85,16 @@ app.get('/track/:token/open.png', async (req, res) => {
 })
 
 app.use(securityHeaders)
-app.use(cors)
 app.use(compression())
+
+// ── Serve React SPA in production (BEFORE CORS — browser navigations carry no Origin) ──
+const publicDir = path.join(__dirname, '..', 'public')
+if (process.env.NODE_ENV === 'production' && fs.existsSync(publicDir)) {
+  app.use(express.static(publicDir))
+}
+
+// CORS only for API routes (browser navigations to static files don't need CORS)
+app.use('/api', cors)
 app.use(express.json({ limit: '10mb' }))
 app.use(cookieParser())
 
@@ -109,10 +117,8 @@ app.use('/api', attachDatabase)
 app.use('/api', systemRoutes)
 app.use('/api', customRoutes)
 
-// Serve React SPA in production
-const publicDir = path.join(__dirname, '..', 'public')
+// SPA catch-all: serve index.html for all non-API routes (client-side routing)
 if (process.env.NODE_ENV === 'production' && fs.existsSync(publicDir)) {
-  app.use(express.static(publicDir))
   app.get('*', (req, res) => {
     res.sendFile(path.join(publicDir, 'index.html'))
   })
