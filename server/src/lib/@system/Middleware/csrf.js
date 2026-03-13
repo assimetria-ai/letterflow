@@ -16,11 +16,20 @@ const { doubleCsrf } = require('csrf-csrf')
  *   - Expose generateCsrfToken() via a GET endpoint so clients can fetch the token
  *   - Clients must include the token in the X-CSRF-Token header for protected requests
  */
+// Fail-closed: require CSRF_SECRET in production — never fall back to a predictable default
+function getCsrfSecret() {
+  const secret = process.env.CSRF_SECRET
+  if (!secret && process.env.NODE_ENV === 'production') {
+    throw new Error('CSRF_SECRET environment variable is required in production. Refusing to start with a default secret.')
+  }
+  return secret || 'default-csrf-secret-change-in-production'
+}
+
 const {
   generateCsrfToken: _generateCsrfToken, // Generate a new CSRF token
   doubleCsrfProtection                    // Middleware to validate CSRF tokens
 } = doubleCsrf({
-  getSecret: () => process.env.CSRF_SECRET || 'default-csrf-secret-change-in-production',
+  getSecret: () => getCsrfSecret(),
   cookieName: '__Host-psifi.x-csrf-token',
   cookieOptions: {
     sameSite: 'strict',

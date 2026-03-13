@@ -1,4 +1,8 @@
+import DOMPurify from 'dompurify';
+
 const PreviewPane = ({ htmlContent, title, subject }) => {
+  const sanitizedHtml = htmlContent ? DOMPurify.sanitize(htmlContent) : '';
+
   return (
     <div className="h-full flex flex-col bg-gray-100">
       {/* Email Preview Header */}
@@ -19,7 +23,7 @@ const PreviewPane = ({ htmlContent, title, subject }) => {
         <div className="max-w-2xl mx-auto bg-white shadow-sm rounded-lg">
           <div
             className="prose prose-sm max-w-none p-8"
-            dangerouslySetInnerHTML={{ __html: htmlContent }}
+            dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
             style={{
               // Email-safe styling
               fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
