@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import NewsletterEditor from './components/NewsletterEditor';
 import NewsletterList from './components/NewsletterList';
+import SubscriberImport from './components/SubscriberImport';
 import './styles/app.css';
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
           <Route path="/newsletters" element={<NewsletterList />} />
           <Route path="/newsletters/new" element={<NewsletterEditor />} />
           <Route path="/newsletters/:id/edit" element={<NewsletterEditor />} />
+          <Route path="/subscribers/import" element={<SubscriberImport />} />
         </Routes>
       </div>
     </BrowserRouter>

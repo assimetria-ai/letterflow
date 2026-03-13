@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const securityHeaders = require('./middleware/security');
 const newsletterRoutes = require('./routes/newsletters');
 const uploadRoutes = require('./routes/upload');
+const subscriberRoutes = require('./routes/subscribers');
 const templateRoutes = require('./routes/templates');
 
 dotenv.config();
@@ -24,6 +25,8 @@ app.use(cookieParser());
 // API Routes
 app.use('/api/newsletters', newsletterRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/subscribers', subscriberRoutes);
+app.use('/api/templates', templateRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
