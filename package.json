@@ -1,5 +1,5 @@
 {
-  "name": "splice",
+  "name": "letterflow",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -25,5 +25,6 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2"
-  }
+  },
+  "description": "AI-powered email campaigns platform"
 }
