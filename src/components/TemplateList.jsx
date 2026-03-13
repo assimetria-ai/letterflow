@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const CATEGORY_COLORS = {
@@ -18,6 +18,8 @@ const TemplateList = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
+  const [previewTemplate, setPreviewTemplate] = useState(null);
+  const [creatingDraft, setCreatingDraft] = useState(null);
 
   useEffect(() => {
     loadTemplates();
@@ -50,6 +52,28 @@ const TemplateList = () => {
       }
     } catch (error) {
       console.error('Error deleting template:', error);
+    }
+  };
+
+  const handleUseTemplate = async (id) => {
+    setCreatingDraft(id);
+    try {
+      const response = await fetch(`/api/emails/from-template/${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+      });
+      if (response.ok) {
+        const draft = await response.json();
+        navigate(`/newsletters/${draft.id}/edit`);
+      } else {
+        const err = await response.json();
+        alert(err.error || 'Failed to create draft from template');
+      }
+    } catch (error) {
+      console.error('Error creating draft from template:', error);
+    } finally {
+      setCreatingDraft(null);
     }
   };
 
@@ -191,7 +215,23 @@ const TemplateList = () => {
                   {t.description && (
                     <p className="text-xs text-gray-500 mb-3 line-clamp-2">{t.description}</p>
                   )}
+                  {/* Use Template button — always visible */}
+                  <div className="mb-2">
+                    <button
+                      onClick={() => handleUseTemplate(t.id)}
+                      disabled={creatingDraft === t.id}
+                      className="w-full px-3 py-2 text-xs font-medium bg-sky-600 text-white rounded-md hover:bg-sky-700 disabled:opacity-50 transition-colors"
+                    >
+                      {creatingDraft === t.id ? 'Creating draft...' : 'Use Template →'}
+                    </button>
+                  </div>
                   <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => setPreviewTemplate(t)}
+                      className="px-3 py-1.5 text-xs text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50"
+                    >
+                      Preview
+                    </button>
                     {t.isSystem ? (
                       <button
                         onClick={() => handleClone(t.id)}
@@ -228,6 +268,82 @@ const TemplateList = () => {
           </div>
         )}
       </div>
+
+      {/* Preview Modal */}
+      {previewTemplate && (
+        <div
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          onClick={() => setPreviewTemplate(null)}
+        >
+          <div
+            className="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">{previewTemplate.name}</h2>
+                <p className="text-sm text-gray-500">{previewTemplate.description}</p>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className={`text-xs px-2 py-0.5 rounded-full ${CATEGORY_COLORS[previewTemplate.category] || CATEGORY_COLORS.general}`}>
+                  {previewTemplate.category}
+                </span>
+                {previewTemplate.tags && previewTemplate.tags.length > 0 && (
+                  <div className="flex space-x-1">
+                    {previewTemplate.tags.slice(0, 3).map(tag => (
+                      <span key={tag} className="text-xs px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Email Preview */}
+            <div className="flex-1 overflow-auto p-6 bg-gray-50">
+              <div className="max-w-[680px] mx-auto bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                {/* Subject line preview */}
+                {previewTemplate.subject && (
+                  <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
+                    <p className="text-xs text-gray-400 mb-1">Subject</p>
+                    <p className="text-sm font-medium text-gray-900">{previewTemplate.subject}</p>
+                  </div>
+                )}
+                <div
+                  className="p-4"
+                  dangerouslySetInnerHTML={{ __html: previewTemplate.htmlContent || '<p style="color:#999;text-align:center;padding:40px;">No content</p>' }}
+                />
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200">
+              <button
+                onClick={() => setPreviewTemplate(null)}
+                className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+              >
+                Close
+              </button>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => { handleClone(previewTemplate.id); setPreviewTemplate(null); }}
+                  className="px-4 py-2 text-sm text-sky-600 border border-sky-200 rounded-md hover:bg-sky-50"
+                >
+                  {previewTemplate.isSystem ? 'Clone & Edit' : 'Clone'}
+                </button>
+                <button
+                  onClick={() => { handleUseTemplate(previewTemplate.id); setPreviewTemplate(null); }}
+                  className="px-4 py-2 text-sm bg-sky-600 text-white rounded-md hover:bg-sky-700"
+                >
+                  Use Template →
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
