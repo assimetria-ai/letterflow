@@ -5,6 +5,7 @@ import SubscriberImport from './components/SubscriberImport';
 import TemplateEditor from './components/TemplateEditor';
 import TemplateList from './components/TemplateList';
 import ABTestManager from './components/ABTestManager';
+import AutomationBuilder from './components/AutomationBuilder';
 import './styles/app.css';
 
 function App() {
@@ -21,6 +22,9 @@ function App() {
           <Route path="/templates/new" element={<TemplateEditor />} />
           <Route path="/templates/:id/edit" element={<TemplateEditor />} />
           <Route path="/ab-tests" element={<ABTestManager />} />
+          <Route path="/automations" element={<AutomationBuilder />} />
+          <Route path="/automations/new" element={<AutomationBuilder />} />
+          <Route path="/automations/:id" element={<AutomationBuilder />} />
         </Routes>
       </div>
     </BrowserRouter>

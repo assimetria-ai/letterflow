@@ -17,6 +17,7 @@ const PermissionRepo = require('./PermissionRepo')
 const EmailLogRepo = require('./EmailLogRepo')
 const FileUploadRepo = require('./FileUploadRepo')
 const NewsletterRepo = require('./NewsletterRepo')
+const AutomationRepo = require('./AutomationRepo')
 
 module.exports = { 
   ApiKeyRepo, 
@@ -29,5 +30,6 @@ module.exports = {
   PermissionRepo,
   EmailLogRepo,
   FileUploadRepo,
-  NewsletterRepo
+  NewsletterRepo,
+  AutomationRepo
 }
