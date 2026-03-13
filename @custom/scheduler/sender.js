@@ -1,12 +1,111 @@
 /**
  * Newsletter Email Sender
  * Task #10318 - Implement scheduled newsletter sending
+ * Task #11186 - Sign unsubscribe and tracking tokens with HMAC
  * 
- * Handles actual email delivery with rate limiting and error handling
+ * Handles actual email delivery with rate limiting and error handling.
+ * All unsubscribe and tracking URLs are HMAC-signed to prevent forgery.
  */
 
+const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const prisma = require('../db/client');
+
+// HMAC secret — must be set in production via HMAC_SECRET env var
+const HMAC_SECRET = process.env.HMAC_SECRET || process.env.JWT_SECRET || 'letterflow-dev-hmac-secret-change-me';
+const HMAC_ALGO = 'sha256';
+
+/**
+ * Generate an HMAC signature for a payload string
+ * @param {string} payload - Data to sign
+ * @returns {string} Hex-encoded HMAC signature
+ */
+function hmacSign(payload) {
+  return crypto.createHmac(HMAC_ALGO, HMAC_SECRET).update(payload).digest('hex');
+}
+
+/**
+ * Generate an HMAC-signed unsubscribe token
+ * @param {string} subscriberId - Subscriber ID
+ * @param {string} newsletterId - Newsletter ID
+ * @returns {string} Signed token (base64url payload + '.' + hex signature)
+ */
+function generateUnsubscribeToken(subscriberId, newsletterId) {
+  const payload = Buffer.from(
+    JSON.stringify({ sid: subscriberId, nid: newsletterId })
+  ).toString('base64url');
+  const sig = hmacSign(payload);
+  return `${payload}.${sig}`;
+}
+
+/**
+ * Verify and decode an HMAC-signed unsubscribe token
+ * @param {string} token - The signed token
+ * @returns {{ subscriberId: string, newsletterId: string } | null} Decoded data or null if invalid
+ */
+function verifyUnsubscribeToken(token) {
+  const dotIdx = token.indexOf('.');
+  if (dotIdx === -1) return null;
+  const payload = token.slice(0, dotIdx);
+  const sig = token.slice(dotIdx + 1);
+  const expected = hmacSign(payload);
+  try {
+    if (!crypto.timingSafeEqual(Buffer.from(sig, 'hex'), Buffer.from(expected, 'hex'))) {
+      return null;
+    }
+  } catch {
+    return null;
+  }
+  try {
+    const data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+    if (!data.sid || !data.nid) return null;
+    return { subscriberId: data.sid, newsletterId: data.nid };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Generate an HMAC-signed tracking token for open/click tracking
+ * @param {string} newsletterId - Newsletter ID
+ * @param {string} subscriberId - Subscriber ID
+ * @param {string} event - Event type ('open' or 'click')
+ * @returns {string} Signed tracking token
+ */
+function generateTrackingToken(newsletterId, subscriberId, event) {
+  const payload = Buffer.from(
+    JSON.stringify({ nid: newsletterId, sid: subscriberId, evt: event })
+  ).toString('base64url');
+  const sig = hmacSign(payload);
+  return `${payload}.${sig}`;
+}
+
+/**
+ * Verify and decode an HMAC-signed tracking token
+ * @param {string} token - The signed token
+ * @returns {{ newsletterId: string, subscriberId: string, event: string } | null}
+ */
+function verifyTrackingToken(token) {
+  const dotIdx = token.indexOf('.');
+  if (dotIdx === -1) return null;
+  const payload = token.slice(0, dotIdx);
+  const sig = token.slice(dotIdx + 1);
+  const expected = hmacSign(payload);
+  try {
+    if (!crypto.timingSafeEqual(Buffer.from(sig, 'hex'), Buffer.from(expected, 'hex'))) {
+      return null;
+    }
+  } catch {
+    return null;
+  }
+  try {
+    const data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+    if (!data.nid || !data.sid || !data.evt) return null;
+    return { newsletterId: data.nid, subscriberId: data.sid, event: data.evt };
+  } catch {
+    return null;
+  }
+}
 
 // Email sending rate limit (emails per second)
 const RATE_LIMIT = parseInt(process.env.EMAIL_RATE_LIMIT) || 10;
@@ -150,13 +249,12 @@ async function sendSingleEmail(transporter, newsletter, delivery, results) {
   const subscriber = delivery.subscriber;
   
   try {
-    // Generate unsubscribe token
-    const unsubscribeToken = Buffer.from(
-      `${subscriber.id}:${newsletter.id}:${Date.now()}`
-    ).toString('base64url');
+    // Generate HMAC-signed tokens (prevents forgery — Task #11186)
+    const unsubscribeToken = generateUnsubscribeToken(subscriber.id, newsletter.id);
+    const trackingToken = generateTrackingToken(newsletter.id, subscriber.id, 'open');
     
-    // Build tracking URLs
-    const trackingPixelUrl = `${process.env.APP_URL}/track/${newsletter.id}/${subscriber.id}/open.png`;
+    // Build signed URLs
+    const trackingPixelUrl = `${process.env.APP_URL}/track/${trackingToken}/open.png`;
     const unsubscribeUrl = `${process.env.APP_URL}/unsubscribe/${unsubscribeToken}`;
     
     // Personalize content
@@ -338,5 +436,9 @@ async function sendTestEmail(toEmail) {
 module.exports = {
   sendNewsletter,
   sendTestEmail,
-  createTransporter
+  createTransporter,
+  generateUnsubscribeToken,
+  verifyUnsubscribeToken,
+  generateTrackingToken,
+  verifyTrackingToken
 };
