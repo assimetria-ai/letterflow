@@ -4,6 +4,7 @@ import NewsletterList from './components/NewsletterList';
 import SubscriberImport from './components/SubscriberImport';
 import TemplateEditor from './components/TemplateEditor';
 import TemplateList from './components/TemplateList';
+import ABTestManager from './components/ABTestManager';
 import './styles/app.css';
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/templates" element={<TemplateList />} />
           <Route path="/templates/new" element={<TemplateEditor />} />
           <Route path="/templates/:id/edit" element={<TemplateEditor />} />
+          <Route path="/ab-tests" element={<ABTestManager />} />
         </Routes>
       </div>
     </BrowserRouter>
