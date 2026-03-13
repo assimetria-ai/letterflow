@@ -9,7 +9,7 @@
 //   const { hits, total, page, totalPages, setPage } = useSearch({ index: 'products', limit: 10 })
 
 import { useState, useCallback, useRef, useEffect } from 'react'
-import { search as searchApi } from '../api/@system/search'
+import { search as searchApi } from '../../api/@system/search.js'
 
 
 
