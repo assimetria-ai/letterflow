@@ -1,0 +1,83 @@
+<mjml>
+  <mj-head>
+    <mj-title>Minimal Newsletter</mj-title>
+    <mj-preview>Clean, simple, and focused on your message</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" />
+      <mj-text font-size="16px" color="#333333" line-height="24px" />
+      <mj-section padding="20px 0" />
+    </mj-attributes>
+    <mj-style>
+      .header-link { color: #666666; text-decoration: none; }
+      .header-link:hover { color: #000000; }
+      .content-link { color: #0066cc; text-decoration: none; border-bottom: 1px solid #0066cc; }
+      .content-link:hover { border-bottom: 2px solid #0066cc; }
+    </mj-style>
+  </mj-head>
+  <mj-body background-color="#f4f4f4">
+    
+    <!-- Header -->
+    <mj-section background-color="#ffffff" padding="40px 20px 20px">
+      <mj-column>
+        <mj-text align="center" font-size="32px" font-weight="300" color="#000000" padding="0">
+          {{BRAND_NAME}}
+        </mj-text>
+        <mj-text align="center" font-size="14px" color="#666666" padding="10px 0 0">
+          <a href="{{WEB_VERSION_URL}}" class="header-link">View in browser</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Divider -->
+    <mj-section background-color="#ffffff" padding="0 20px">
+      <mj-column>
+        <mj-divider border-width="1px" border-color="#e0e0e0" />
+      </mj-column>
+    </mj-section>
+
+    <!-- Main Content -->
+    <mj-section background-color="#ffffff" padding="40px 20px">
+      <mj:column>
+        <mj-text font-size="28px" font-weight="300" color="#000000" padding="0 0 20px">
+          {{HEADLINE}}
+        </mj-text>
+        
+        <mj-text padding="0 0 20px">
+          {{CONTENT_PARAGRAPH_1}}
+        </mj-text>
+        
+        <mj-text padding="0 0 20px">
+          {{CONTENT_PARAGRAPH_2}}
+        </mj-text>
+        
+        <mj-button background-color="#000000" color="#ffffff" font-size="16px" font-weight="500" 
+                   border-radius="0" padding="30px 0" inner-padding="14px 40px"
+                   href="{{CTA_URL}}">
+          {{CTA_TEXT}}
+        </mj-button>
+        
+        <mj-text padding="30px 0 0" font-size="14px" color="#666666">
+          {{SIGNATURE}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section background-color="#ffffff" padding="40px 20px">
+      <mj-column>
+        <mj-divider border-width="1px" border-color="#e0e0e0" padding="0 0 20px" />
+        <mj-text align="center" font-size="12px" color="#999999" padding="0">
+          © {{CURRENT_YEAR}} {{COMPANY_NAME}}. All rights reserved.
+        </mj-text>
+        <mj-text align="center" font-size="12px" color="#999999" padding="10px 0 0">
+          <a href="{{UNSUBSCRIBE_URL}}" class="header-link">Unsubscribe</a> | 
+          <a href="{{PREFERENCES_URL}}" class="header-link">Preferences</a>
+        </mj-text>
+        <mj-text align="center" font-size="11px" color="#cccccc" padding="10px 0 0">
+          {{COMPANY_ADDRESS}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+  </mj-body>
+</mjml>

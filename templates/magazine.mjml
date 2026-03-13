@@ -1,0 +1,173 @@
+<mjml>
+  <mj-head>
+    <mj-title>Magazine Newsletter</mj-title>
+    <mj-preview>Rich content layout with featured stories</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Georgia, 'Times New Roman', serif" />
+      <mj-text font-size="16px" color="#333333" line-height="26px" />
+      <mj-section padding="0" />
+    </mj-attributes>
+    <mj-style>
+      .category-tag { 
+        color: #c41e3a; 
+        font-size: 11px; 
+        font-weight: 700; 
+        text-transform: uppercase; 
+        letter-spacing: 1px;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      }
+      .article-title { 
+        color: #1a1a1a; 
+        font-size: 20px; 
+        font-weight: 700; 
+        line-height: 28px;
+        text-decoration: none;
+      }
+      .article-title:hover { color: #c41e3a; }
+      .read-more { 
+        color: #c41e3a; 
+        text-decoration: none; 
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .footer-link { color: #666666; text-decoration: none; }
+    </mj-style>
+  </mj-head>
+  <mj-body background-color="#ffffff">
+    
+    <!-- Masthead -->
+    <mj-section background-color="#1a1a1a" padding="30px 20px">
+      <mj-column>
+        <mj-text align="center" font-size="42px" font-weight="700" color="#ffffff" 
+                 padding="0" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif">
+          {{PUBLICATION_NAME}}
+        </mj-text>
+        <mj-text align="center" font-size="12px" color="#cccccc" padding="5px 0 0"
+                 font-family="'Helvetica Neue', Helvetica, Arial, sans-serif">
+          {{TAGLINE}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Date & Navigation -->
+    <mj-section background-color="#f8f8f8" padding="15px 20px">
+      <mj-column width="50%">
+        <mj-text align="left" font-size="12px" color="#666666" padding="0"
+                 font-family="'Helvetica Neue', Helvetica, Arial, sans-serif">
+          {{ISSUE_DATE}}
+        </mj-text>
+      </mj-column>
+      <mj-column width="50%">
+        <mj-text align="right" font-size="12px" color="#666666" padding="0"
+                 font-family="'Helvetica Neue', Helvetica, Arial, sans-serif">
+          <a href="{{WEB_VERSION_URL}}" class="footer-link">View Online</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Featured Story -->
+    <mj-section padding="40px 20px">
+      <mj-column>
+        <mj-image src="{{FEATURED_IMAGE}}" alt="{{FEATURED_ALT}}" padding="0 0 20px" />
+        <mj-text padding="0 0 10px">
+          <span class="category-tag">{{FEATURED_CATEGORY}}</span>
+        </mj-text>
+        <mj-text padding="0 0 15px">
+          <a href="{{FEATURED_URL}}" class="article-title">{{FEATURED_TITLE}}</a>
+        </mj-text>
+        <mj-text padding="0 0 15px">
+          {{FEATURED_EXCERPT}}
+        </mj-text>
+        <mj-text padding="0">
+          <a href="{{FEATURED_URL}}" class="read-more">Continue Reading →</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Divider -->
+    <mj-section padding="20px">
+      <mj-column>
+        <mj-divider border-width="2px" border-color="#1a1a1a" />
+      </mj-column>
+    </mj-section>
+
+    <!-- Two Column Articles -->
+    <mj-section padding="20px">
+      <mj-column width="48%">
+        <mj-image src="{{ARTICLE_1_IMAGE}}" alt="{{ARTICLE_1_ALT}}" padding="0 0 15px" />
+        <mj-text padding="0 0 8px">
+          <span class="category-tag">{{ARTICLE_1_CATEGORY}}</span>
+        </mj-text>
+        <mj-text padding="0 0 12px">
+          <a href="{{ARTICLE_1_URL}}" class="article-title">{{ARTICLE_1_TITLE}}</a>
+        </mj-text>
+        <mj-text font-size="14px" padding="0 0 10px">
+          {{ARTICLE_1_EXCERPT}}
+        </mj-text>
+        <mj-text padding="0">
+          <a href="{{ARTICLE_1_URL}}" class="read-more">Read More →</a>
+        </mj-text>
+      </mj-column>
+      
+      <mj-column width="4%">
+        <!-- Spacer -->
+      </mj-column>
+      
+      <mj-column width="48%">
+        <mj-image src="{{ARTICLE_2_IMAGE}}" alt="{{ARTICLE_2_ALT}}" padding="0 0 15px" />
+        <mj-text padding="0 0 8px">
+          <span class="category-tag">{{ARTICLE_2_CATEGORY}}</span>
+        </mj-text>
+        <mj-text padding="0 0 12px">
+          <a href="{{ARTICLE_2_URL}}" class="article-title">{{ARTICLE_2_TITLE}}</a>
+        </mj-text>
+        <mj-text font-size="14px" padding="0 0 10px">
+          {{ARTICLE_2_EXCERPT}}
+        </mj-text>
+        <mj-text padding="0">
+          <a href="{{ARTICLE_2_URL}}" class="read-more">Read More →</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Quick Reads Section -->
+    <mj-section background-color="#f8f8f8" padding="40px 20px">
+      <mj-column>
+        <mj-text align="center" font-size="24px" font-weight="700" color="#1a1a1a" 
+                 padding="0 0 30px" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif">
+          QUICK READS
+        </mj-text>
+        
+        <mj-text padding="0 0 15px">
+          → <a href="{{QUICK_1_URL}}" class="article-title">{{QUICK_1_TITLE}}</a>
+        </mj-text>
+        <mj-text padding="0 0 15px">
+          → <a href="{{QUICK_2_URL}}" class="article-title">{{QUICK_2_TITLE}}</a>
+        </mj-text>
+        <mj-text padding="0 0 15px">
+          → <a href="{{QUICK_3_URL}}" class="article-title">{{QUICK_3_TITLE}}</a>
+        </mj-text>
+        <mj-text padding="0">
+          → <a href="{{QUICK_4_URL}}" class="article-title">{{QUICK_4_TITLE}}</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section background-color="#1a1a1a" padding="40px 20px">
+      <mj-column>
+        <mj-text align="center" font-size="11px" color="#999999" padding="0"
+                 font-family="'Helvetica Neue', Helvetica, Arial, sans-serif">
+          {{COMPANY_NAME}} | {{COMPANY_ADDRESS}}
+        </mj-text>
+        <mj-text align="center" font-size="11px" color="#999999" padding="15px 0 0"
+                 font-family="'Helvetica Neue', Helvetica, Arial, sans-serif">
+          <a href="{{UNSUBSCRIBE_URL}}" class="footer-link" style="color: #999999;">Unsubscribe</a> | 
+          <a href="{{PREFERENCES_URL}}" class="footer-link" style="color: #999999;">Email Preferences</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+  </mj-body>
+</mjml>

@@ -1,0 +1,226 @@
+<mjml>
+  <mj-head>
+    <mj-title>Product Update Newsletter</mj-title>
+    <mj-preview>New features, improvements, and what's coming next</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif" />
+      <mj-text font-size="16px" color="#333333" line-height="26px" />
+      <mj-section padding="0" />
+    </mj-attributes>
+    <mj-style>
+      .feature-badge {
+        background-color: #10b981;
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 4px 10px;
+        border-radius: 12px;
+        display: inline-block;
+      }
+      .improvement-badge {
+        background-color: #3b82f6;
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 4px 10px;
+        border-radius: 12px;
+        display: inline-block;
+      }
+      .fix-badge {
+        background-color: #ef4444;
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 4px 10px;
+        border-radius: 12px;
+        display: inline-block;
+      }
+      .feature-title {
+        color: #1a1a1a;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 28px;
+      }
+      .cta-link { color: #6366f1; text-decoration: none; font-weight: 600; }
+      .cta-link:hover { text-decoration: underline; }
+      .footer-link { color: #999999; text-decoration: none; }
+    </mj-style>
+  </mj-head>
+  <mj-body background-color="#fafafa">
+    
+    <!-- Header -->
+    <mj-section background-color="#6366f1" padding="40px 20px">
+      <mj-column>
+        <mj-text align="center" font-size="40px" font-weight="700" color="#ffffff" padding="0">
+          {{PRODUCT_NAME}}
+        </mj-text>
+        <mj-text align="center" font-size="18px" color="#c7d2fe" padding="10px 0 0" font-weight="500">
+          Product Updates
+        </mj-text>
+        <mj-text align="center" font-size="14px" color="#e0e7ff" padding="15px 0 0">
+          {{UPDATE_DATE}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Hero Message -->
+    <mj-section background-color="#ffffff" padding="40px 20px 30px">
+      <mj-column>
+        <mj-text font-size="24px" font-weight="600" color="#1a1a1a" padding="0 0 15px" line-height="32px">
+          {{HERO_HEADLINE}}
+        </mj-text>
+        <mj-text padding="0" color="#666666">
+          {{HERO_MESSAGE}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- New Feature 1 -->
+    <mj-section background-color="#ffffff" padding="30px 20px">
+      <mj-column width="30%">
+        <mj-image src="{{FEATURE_1_IMAGE}}" alt="{{FEATURE_1_ALT}}" 
+                  border-radius="8px" padding="0" />
+      </mj-column>
+      <mj-column width="70%">
+        <mj-text padding="0 0 10px">
+          <span class="feature-badge">New</span>
+        </mj-text>
+        <mj-text css-class="feature-title" padding="0 0 12px">
+          {{FEATURE_1_TITLE}}
+        </mj-text>
+        <mj-text font-size="15px" color="#666666" padding="0 0 15px">
+          {{FEATURE_1_DESCRIPTION}}
+        </mj-text>
+        <mj-text padding="0">
+          <a href="{{FEATURE_1_URL}}" class="cta-link">Learn more →</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Divider -->
+    <mj-section background-color="#ffffff" padding="0 20px">
+      <mj-column>
+        <mj-divider border-width="1px" border-color="#f0f0f0" />
+      </mj-column>
+    </mj-section>
+
+    <!-- New Feature 2 -->
+    <mj-section background-color="#ffffff" padding="30px 20px">
+      <mj-column width="30%">
+        <mj-image src="{{FEATURE_2_IMAGE}}" alt="{{FEATURE_2_ALT}}" 
+                  border-radius="8px" padding="0" />
+      </mj-column>
+      <mj-column width="70%">
+        <mj-text padding="0 0 10px">
+          <span class="feature-badge">New</span>
+        </mj-text>
+        <mj-text css-class="feature-title" padding="0 0 12px">
+          {{FEATURE_2_TITLE}}
+        </mj-text>
+        <mj-text font-size="15px" color="#666666" padding="0 0 15px">
+          {{FEATURE_2_DESCRIPTION}}
+        </mj-text>
+        <mj-text padding="0">
+          <a href="{{FEATURE_2_URL}}" class="cta-link">Learn more →</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Improvements Section -->
+    <mj-section background-color="#f9fafb" padding="40px 20px 20px">
+      <mj-column>
+        <mj-text font-size="22px" font-weight="600" color="#1a1a1a" padding="0 0 20px">
+          Improvements & Fixes
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#f9fafb" padding="0 20px 30px">
+      <mj-column>
+        <mj-text padding="0 0 15px">
+          <span class="improvement-badge">Improved</span>
+          <strong style="margin-left: 10px;">{{IMPROVEMENT_1_TITLE}}</strong><br/>
+          <span style="color: #666666; font-size: 14px; margin-left: 90px;">{{IMPROVEMENT_1_DESC}}</span>
+        </mj-text>
+        <mj-text padding="0 0 15px">
+          <span class="improvement-badge">Improved</span>
+          <strong style="margin-left: 10px;">{{IMPROVEMENT_2_TITLE}}</strong><br/>
+          <span style="color: #666666; font-size: 14px; margin-left: 90px;">{{IMPROVEMENT_2_DESC}}</span>
+        </mj-text>
+        <mj-text padding="0 0 15px">
+          <span class="fix-badge">Fixed</span>
+          <strong style="margin-left: 10px;">{{FIX_1_TITLE}}</strong><br/>
+          <span style="color: #666666; font-size: 14px; margin-left: 66px;">{{FIX_1_DESC}}</span>
+        </mj-text>
+        <mj-text padding="0">
+          <span class="fix-badge">Fixed</span>
+          <strong style="margin-left: 10px;">{{FIX_2_TITLE}}</strong><br/>
+          <span style="color: #666666; font-size: 14px; margin-left: 66px;">{{FIX_2_DESC}}</span>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Coming Soon Section -->
+    <mj-section background-color="#ffffff" padding="40px 20px">
+      <mj-column>
+        <mj-text font-size="22px" font-weight="600" color="#1a1a1a" padding="0 0 15px">
+          🚀 Coming Soon
+        </mj-text>
+        <mj-text padding="0 0 12px" color="#666666">
+          Here's a sneak peek at what we're working on next:
+        </mj-text>
+        <mj-text padding="0 0 10px">
+          → <strong>{{UPCOMING_1_TITLE}}</strong> — {{UPCOMING_1_DESC}}
+        </mj-text>
+        <mj-text padding="0 0 10px">
+          → <strong>{{UPCOMING_2_TITLE}}</strong> — {{UPCOMING_2_DESC}}
+        </mj-text>
+        <mj-text padding="0 0 20px">
+          → <strong>{{UPCOMING_3_TITLE}}</strong> — {{UPCOMING_3_DESC}}
+        </mj-text>
+        <mj-text padding="0" font-size="14px" color="#999999">
+          Have feedback or feature requests? <a href="{{FEEDBACK_URL}}" class="cta-link">Let us know</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- CTA -->
+    <mj-section background-color="#6366f1" padding="40px 20px">
+      <mj-column>
+        <mj-text align="center" font-size="20px" font-weight="600" color="#ffffff" padding="0 0 20px">
+          Ready to try the new features?
+        </mj-text>
+        <mj-button background-color="#ffffff" color="#6366f1" font-size="16px" font-weight="600" 
+                   border-radius="6px" padding="0" inner-padding="14px 40px"
+                   href="{{APP_URL}}">
+          Open {{PRODUCT_NAME}}
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section background-color="#ffffff" padding="30px 20px">
+      <mj-column>
+        <mj-text align="center" font-size="14px" color="#666666" padding="0 0 15px">
+          Questions? Check our <a href="{{DOCS_URL}}" class="cta-link">documentation</a> or 
+          <a href="{{SUPPORT_URL}}" class="cta-link">contact support</a>.
+        </mj-text>
+        <mj-divider border-width="1px" border-color="#e0e0e0" padding="20px 0" />
+        <mj-text align="center" font-size="12px" color="#999999" padding="0">
+          © {{CURRENT_YEAR}} {{COMPANY_NAME}}. All rights reserved.
+        </mj-text>
+        <mj-text align="center" font-size="12px" padding="10px 0 0">
+          <a href="{{UNSUBSCRIBE_URL}}" class="footer-link">Unsubscribe</a> | 
+          <a href="{{PREFERENCES_URL}}" class="footer-link">Update Preferences</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+  </mj-body>
+</mjml>

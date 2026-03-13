@@ -1,0 +1,334 @@
+// products/letterflow/@custom/db/schema.prisma - LetterFlow Database Schema
+// Full schema: users, newsletters, subscribers, issues, campaigns, templates, analytics, auth
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ─── Auth Tables ─────────────────────────────────────────────────────
+
+model User {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  name            String?
+  password        String
+  avatarUrl       String?  @map("avatar_url")
+  emailVerified   Boolean  @default(false) @map("email_verified")
+  role            String   @default("user") // user, admin
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  sessions        Session[]
+  passwordResets  PasswordReset[]
+  newsletters     Newsletter[]
+  subscriberLists SubscriberList[]
+  campaigns       Campaign[]
+  templates       Template[]
+  issues          Issue[]
+
+  @@map("users")
+}
+
+model Session {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  token       String   @unique
+  expiresAt   DateTime @map("expires_at")
+  ipAddress   String?  @map("ip_address")
+  userAgent   String?  @map("user_agent")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+model PasswordReset {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  token       String   @unique
+  expiresAt   DateTime @map("expires_at")
+  usedAt      DateTime? @map("used_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@map("password_resets")
+}
+
+model EmailVerification {
+  id          String   @id @default(cuid())
+  email       String
+  token       String   @unique
+  expiresAt   DateTime @map("expires_at")
+  verifiedAt  DateTime? @map("verified_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([email])
+  @@index([token])
+  @@map("email_verifications")
+}
+
+// ─── Newsletter & Issues ─────────────────────────────────────────────
+
+model Newsletter {
+  id              String    @id @default(cuid())
+  title           String
+  description     String?   @db.Text
+  userId          String    @map("user_id")
+  slug            String    @unique
+  logoUrl         String?   @map("logo_url")
+  websiteUrl      String?   @map("website_url")
+  senderName      String?   @map("sender_name")
+  senderEmail     String?   @map("sender_email")
+  replyToEmail    String?   @map("reply_to_email")
+  primaryColor    String?   @default("#0EA5E9") @map("primary_color")
+  subscriberCount Int       @default(0) @map("subscriber_count")
+  status          String    @default("active") // active, paused, archived
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  issues          Issue[]
+  campaigns       Campaign[]
+  subscriberLists SubscriberList[]
+
+  @@index([userId])
+  @@index([slug])
+  @@index([status])
+  @@map("newsletters")
+}
+
+model Issue {
+  id              String    @id @default(cuid())
+  newsletterId    String    @map("newsletter_id")
+  userId          String    @map("user_id")
+  title           String
+  subject         String?
+  previewText     String?   @map("preview_text")
+  htmlContent     String    @map("html_content") @db.Text
+  plainContent    String?   @map("plain_content") @db.Text
+  templateId      String?   @map("template_id")
+  issueNumber     Int?      @map("issue_number")
+  status          String    @default("draft") // draft, scheduled, sending, sent, failed
+  publishedAt     DateTime? @map("published_at")
+  scheduledFor    DateTime? @map("scheduled_for")
+  metadata        Json?     @default("{}") // timezone, errors, A/B test config
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  newsletter      Newsletter          @relation(fields: [newsletterId], references: [id], onDelete: Cascade)
+  user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template        Template?           @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  deliveries      IssueDelivery[]
+  analytics       IssueAnalytics[]
+  campaignIssues  CampaignIssue[]
+
+  @@index([newsletterId])
+  @@index([userId])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([scheduledFor])
+  @@map("issues")
+}
+
+// ─── Subscribers ─────────────────────────────────────────────────────
+
+model Subscriber {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  name            String?
+  status          String    @default("active") // active, unsubscribed, bounced, complained
+  source          String?   // signup, import, api, landing_page
+  tags            String[]  @default([])
+  metadata        Json?     @default("{}")
+  subscribedAt    DateTime  @default(now()) @map("subscribed_at")
+  unsubscribedAt  DateTime? @map("unsubscribed_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  lists           SubscriberListMember[]
+  deliveries      IssueDelivery[]
+
+  @@index([email])
+  @@index([status])
+  @@map("subscribers")
+}
+
+model SubscriberList {
+  id            String   @id @default(cuid())
+  userId        String   @map("user_id")
+  newsletterId  String?  @map("newsletter_id")
+  name          String
+  description   String?
+  isDefault     Boolean  @default(false) @map("is_default")
+  count         Int      @default(0)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user          User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  newsletter    Newsletter?            @relation(fields: [newsletterId], references: [id], onDelete: SetNull)
+  members       SubscriberListMember[]
+  campaigns     Campaign[]
+
+  @@index([userId])
+  @@index([newsletterId])
+  @@map("subscriber_lists")
+}
+
+model SubscriberListMember {
+  id            String   @id @default(cuid())
+  listId        String   @map("list_id")
+  subscriberId  String   @map("subscriber_id")
+  addedAt       DateTime @default(now()) @map("added_at")
+
+  // Relations
+  list          SubscriberList @relation(fields: [listId], references: [id], onDelete: Cascade)
+  subscriber    Subscriber     @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+
+  @@unique([listId, subscriberId])
+  @@index([listId])
+  @@index([subscriberId])
+  @@map("subscriber_list_members")
+}
+
+// ─── Campaigns ───────────────────────────────────────────────────────
+
+model Campaign {
+  id              String    @id @default(cuid())
+  userId          String    @map("user_id")
+  newsletterId    String    @map("newsletter_id")
+  listId          String?   @map("list_id")
+  name            String
+  description     String?
+  type            String    @default("regular") // regular, automated, ab_test, drip
+  status          String    @default("draft") // draft, active, paused, completed, cancelled
+  triggerType     String?   @map("trigger_type") // immediate, scheduled, event (for automations)
+  triggerConfig   Json?     @map("trigger_config") // schedule details, event config
+  startedAt       DateTime? @map("started_at")
+  completedAt     DateTime? @map("completed_at")
+  metadata        Json?     @default("{}")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  newsletter      Newsletter      @relation(fields: [newsletterId], references: [id], onDelete: Cascade)
+  list            SubscriberList? @relation(fields: [listId], references: [id], onDelete: SetNull)
+  campaignIssues  CampaignIssue[]
+
+  @@index([userId])
+  @@index([newsletterId])
+  @@index([status])
+  @@index([type])
+  @@map("campaigns")
+}
+
+model CampaignIssue {
+  id          String   @id @default(cuid())
+  campaignId  String   @map("campaign_id")
+  issueId     String   @map("issue_id")
+  position    Int      @default(0) // order in drip sequence
+  delayHours  Int?     @default(0) @map("delay_hours") // delay from previous in drip
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relations
+  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  issue       Issue    @relation(fields: [issueId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, issueId])
+  @@index([campaignId])
+  @@index([issueId])
+  @@map("campaign_issues")
+}
+
+// ─── Templates ───────────────────────────────────────────────────────
+
+model Template {
+  id          String   @id @default(cuid())
+  userId      String?  @map("user_id") // null = system template
+  name        String
+  description String?
+  htmlContent String   @map("html_content") @db.Text
+  thumbnail   String?  // preview image URL
+  category    String   @default("general") // general, welcome, digest, announcement, promotional
+  isSystem    Boolean  @default(false) @map("is_system")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user        User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  issues      Issue[]
+
+  @@index([userId])
+  @@index([category])
+  @@index([isSystem])
+  @@map("templates")
+}
+
+// ─── Delivery & Analytics ────────────────────────────────────────────
+
+model IssueDelivery {
+  id            String    @id @default(cuid())
+  issueId       String    @map("issue_id")
+  subscriberId  String    @map("subscriber_id")
+  status        String    @default("pending") // pending, sent, delivered, opened, clicked, bounced, failed, complained
+  sentAt        DateTime? @map("sent_at")
+  deliveredAt   DateTime? @map("delivered_at")
+  openedAt      DateTime? @map("opened_at")
+  clickedAt     DateTime? @map("clicked_at")
+  bouncedAt     DateTime? @map("bounced_at")
+  errorMessage  String?   @map("error_message")
+  messageId     String?   @map("message_id") // SES/Resend message ID for tracking
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  issue         Issue      @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  subscriber    Subscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+
+  @@unique([issueId, subscriberId])
+  @@index([issueId])
+  @@index([subscriberId])
+  @@index([status])
+  @@index([messageId])
+  @@map("issue_deliveries")
+}
+
+model IssueAnalytics {
+  id            String   @id @default(cuid())
+  issueId       String   @map("issue_id")
+  event         String   // open, click, unsubscribe, bounce, complaint
+  subscriberId  String?  @map("subscriber_id")
+  ipAddress     String?  @map("ip_address")
+  userAgent     String?  @map("user_agent")
+  linkUrl       String?  @map("link_url")
+  metadata      Json?    @default("{}")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  // Relations
+  issue         Issue @relation(fields: [issueId], references: [id], onDelete: Cascade)
+
+  @@index([issueId])
+  @@index([event])
+  @@index([subscriberId])
+  @@index([createdAt])
+  @@map("issue_analytics")
+}

@@ -1,0 +1,198 @@
+<mjml>
+  <mj-head>
+    <mj-title>Personal Newsletter</mj-title>
+    <mj-preview>A warm, one-to-one conversation</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="'Georgia', 'Times New Roman', serif" />
+      <mj-text font-size="17px" color="#2d2d2d" line-height="30px" />
+      <mj-section padding="0" />
+    </mj-attributes>
+    <mj-style>
+      .author-name {
+        color: #2d2d2d;
+        font-size: 20px;
+        font-weight: 400;
+        font-style: italic;
+      }
+      .signature {
+        color: #2d2d2d;
+        font-size: 24px;
+        font-family: 'Brush Script MT', cursive;
+        font-style: italic;
+      }
+      .content-link {
+        color: #c17b5f;
+        text-decoration: none;
+        border-bottom: 1px solid #c17b5f;
+      }
+      .content-link:hover {
+        border-bottom: 2px solid #c17b5f;
+      }
+      .footer-link {
+        color: #999999;
+        text-decoration: none;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      }
+      .pull-quote {
+        color: #6b6b6b;
+        font-size: 22px;
+        font-style: italic;
+        line-height: 34px;
+        border-left: 4px solid #c17b5f;
+        padding-left: 20px;
+        margin: 30px 0;
+      }
+    </mj-style>
+  </mj-head>
+  <mj-body background-color="#f9f7f4">
+    
+    <!-- Letterhead -->
+    <mj-section background-color="#ffffff" padding="50px 20px 30px">
+      <mj-column>
+        <mj-text align="center" css-class="author-name" padding="0">
+          {{AUTHOR_NAME}}
+        </mj-text>
+        <mj-text align="center" font-size="13px" color="#999999" padding="5px 0 0"
+                 font-family="'Helvetica Neue', Helvetica, Arial, sans-serif">
+          {{TAGLINE}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Date -->
+    <mj-section background-color="#ffffff" padding="20px">
+      <mj-column>
+        <mj-text align="center" font-size="14px" color="#999999" padding="0"
+                 font-family="'Helvetica Neue', Helvetica, Arial, sans-serif">
+          {{PUBLISH_DATE}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Greeting -->
+    <mj-section background-color="#ffffff" padding="30px 40px 20px">
+      <mj-column>
+        <mj-text padding="0">
+          {{GREETING}},
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Main Content -->
+    <mj-section background-color="#ffffff" padding="0 40px">
+      <mj-column>
+        <mj-text padding="0 0 25px">
+          {{PARAGRAPH_1}}
+        </mj-text>
+        
+        <mj-text padding="0 0 25px">
+          {{PARAGRAPH_2}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Pull Quote (Optional) -->
+    <mj-section background-color="#ffffff" padding="10px 40px">
+      <mj-column>
+        <mj-text css-class="pull-quote">
+          "{{PULL_QUOTE}}"
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Continued Content -->
+    <mj-section background-color="#ffffff" padding="0 40px">
+      <mj-column>
+        <mj-text padding="0 0 25px">
+          {{PARAGRAPH_3}}
+        </mj-text>
+        
+        <mj-text padding="0 0 25px">
+          {{PARAGRAPH_4}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Image (Optional) -->
+    <mj-section background-color="#ffffff" padding="20px 40px">
+      <mj-column>
+        <mj-image src="{{CONTENT_IMAGE}}" alt="{{IMAGE_ALT}}" 
+                  border-radius="4px" padding="0 0 10px" />
+        <mj-text align="center" font-size="14px" color="#999999" padding="0"
+                 font-style="italic" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif">
+          {{IMAGE_CAPTION}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Final Thoughts -->
+    <mj-section background-color="#ffffff" padding="20px 40px">
+      <mj-column>
+        <mj-text padding="0 0 25px">
+          {{PARAGRAPH_5}}
+        </mj-text>
+        
+        <mj-text padding="0 0 30px">
+          {{CLOSING_THOUGHT}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Signature -->
+    <mj-section background-color="#ffffff" padding="0 40px 50px">
+      <mj-column>
+        <mj-text padding="0 0 10px">
+          {{SIGNOFF}},
+        </mj-text>
+        <mj-text css-class="signature" padding="0">
+          {{AUTHOR_NAME}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- PS (Optional) -->
+    <mj-section background-color="#ffffff" padding="0 40px 40px">
+      <mj-column>
+        <mj-divider border-width="1px" border-color="#e8e5e0" padding="0 0 25px" />
+        <mj-text padding="0" font-size="16px">
+          <em>P.S.</em> {{PS_CONTENT}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Recommend Section -->
+    <mj-section background-color="#faf8f5" padding="40px 40px">
+      <mj-column>
+        <mj-text align="center" font-size="16px" color="#6b6b6b" padding="0 0 20px">
+          Enjoying this? Share it with someone who might appreciate it.
+        </mj-text>
+        <mj-button background-color="#c17b5f" color="#ffffff" font-size="15px" 
+                   border-radius="4px" padding="0" inner-padding="12px 30px"
+                   href="{{SHARE_URL}}" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif">
+          Share This Letter
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section background-color="#ffffff" padding="40px 20px">
+      <mj-column>
+        <mj-divider border-width="1px" border-color="#e8e5e0" padding="0 0 25px" />
+        <mj-text align="center" font-size="13px" color="#999999" padding="0"
+                 font-family="'Helvetica Neue', Helvetica, Arial, sans-serif">
+          You're receiving this because you subscribed to {{NEWSLETTER_NAME}}.
+        </mj-text>
+        <mj-text align="center" font-size="12px" padding="15px 0 0">
+          <a href="{{ARCHIVE_URL}}" class="footer-link">Read Past Issues</a> | 
+          <a href="{{PREFERENCES_URL}}" class="footer-link">Email Preferences</a> | 
+          <a href="{{UNSUBSCRIBE_URL}}" class="footer-link">Unsubscribe</a>
+        </mj-text>
+        <mj-text align="center" font-size="11px" color="#cccccc" padding="15px 0 0"
+                 font-family="'Helvetica Neue', Helvetica, Arial, sans-serif">
+          {{COMPANY_NAME}} • {{COMPANY_ADDRESS}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+  </mj-body>
+</mjml>

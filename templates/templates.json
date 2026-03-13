@@ -1,0 +1,200 @@
+{
+  "templates": [
+    {
+      "id": "minimal",
+      "name": "Minimal",
+      "description": "Clean, distraction-free layout for focused messaging",
+      "category": "basic",
+      "difficulty": "beginner",
+      "file": "minimal.mjml",
+      "thumbnail": "/templates/thumbnails/minimal.png",
+      "useCases": [
+        "Personal announcements",
+        "Product launches",
+        "Single-topic newsletters",
+        "Brand storytelling"
+      ],
+      "colors": {
+        "primary": "#000000",
+        "background": "#f4f4f4",
+        "text": "#333333"
+      },
+      "requiredVariables": [
+        "BRAND_NAME",
+        "HEADLINE",
+        "CONTENT_PARAGRAPH_1",
+        "CTA_TEXT",
+        "CTA_URL"
+      ],
+      "optionalVariables": [
+        "CONTENT_PARAGRAPH_2",
+        "SIGNATURE",
+        "WEB_VERSION_URL"
+      ]
+    },
+    {
+      "id": "magazine",
+      "name": "Magazine",
+      "description": "Multi-column, rich content layout inspired by editorial publications",
+      "category": "editorial",
+      "difficulty": "intermediate",
+      "file": "magazine.mjml",
+      "thumbnail": "/templates/thumbnails/magazine.png",
+      "useCases": [
+        "Content curation newsletters",
+        "Media/publishing companies",
+        "Multi-topic roundups",
+        "Editorial content"
+      ],
+      "colors": {
+        "primary": "#c41e3a",
+        "background": "#ffffff",
+        "accent": "#1a1a1a"
+      },
+      "requiredVariables": [
+        "PUBLICATION_NAME",
+        "FEATURED_TITLE",
+        "FEATURED_IMAGE",
+        "FEATURED_URL"
+      ],
+      "optionalVariables": [
+        "TAGLINE",
+        "ISSUE_DATE",
+        "ARTICLE_1_TITLE",
+        "ARTICLE_2_TITLE",
+        "QUICK_1_TITLE"
+      ]
+    },
+    {
+      "id": "digest",
+      "name": "Digest",
+      "description": "List-based layout for content aggregation and roundups",
+      "category": "curation",
+      "difficulty": "beginner",
+      "file": "digest.mjml",
+      "thumbnail": "/templates/thumbnails/digest.png",
+      "useCases": [
+        "Daily/weekly digests",
+        "News roundups",
+        "Content aggregation",
+        "Link collections",
+        "Industry updates"
+      ],
+      "colors": {
+        "primary": "#4a90e2",
+        "background": "#f5f5f5",
+        "text": "#333333"
+      },
+      "requiredVariables": [
+        "DIGEST_NAME",
+        "STORY_1_TITLE",
+        "STORY_1_URL",
+        "STORY_2_TITLE",
+        "STORY_2_URL"
+      ],
+      "optionalVariables": [
+        "DIGEST_SUBTITLE",
+        "ISSUE_NUMBER",
+        "INTRO_TEXT",
+        "TREND_1_TITLE",
+        "BITE_1_TITLE"
+      ]
+    },
+    {
+      "id": "product-update",
+      "name": "Product Update",
+      "description": "Feature-focused layout for product releases and updates",
+      "category": "saas",
+      "difficulty": "intermediate",
+      "file": "product-update.mjml",
+      "thumbnail": "/templates/thumbnails/product-update.png",
+      "useCases": [
+        "SaaS product updates",
+        "Feature releases",
+        "Changelog newsletters",
+        "App update announcements",
+        "Developer updates"
+      ],
+      "colors": {
+        "primary": "#6366f1",
+        "success": "#10b981",
+        "warning": "#3b82f6",
+        "error": "#ef4444"
+      },
+      "requiredVariables": [
+        "PRODUCT_NAME",
+        "HERO_HEADLINE",
+        "FEATURE_1_TITLE",
+        "FEATURE_1_IMAGE",
+        "APP_URL"
+      ],
+      "optionalVariables": [
+        "HERO_MESSAGE",
+        "FEATURE_2_TITLE",
+        "IMPROVEMENT_1_TITLE",
+        "FIX_1_TITLE",
+        "UPCOMING_1_TITLE"
+      ]
+    },
+    {
+      "id": "personal",
+      "name": "Personal",
+      "description": "Warm, letter-style layout for one-to-one communication",
+      "category": "personal",
+      "difficulty": "beginner",
+      "file": "personal.mjml",
+      "thumbnail": "/templates/thumbnails/personal.png",
+      "useCases": [
+        "Personal newsletters",
+        "Founder updates",
+        "Thought leadership",
+        "Community letters",
+        "Behind-the-scenes content"
+      ],
+      "colors": {
+        "primary": "#c17b5f",
+        "background": "#f9f7f4",
+        "text": "#2d2d2d"
+      },
+      "requiredVariables": [
+        "AUTHOR_NAME",
+        "GREETING",
+        "PARAGRAPH_1",
+        "SIGNOFF"
+      ],
+      "optionalVariables": [
+        "TAGLINE",
+        "PUBLISH_DATE",
+        "PARAGRAPH_2",
+        "PULL_QUOTE",
+        "CONTENT_IMAGE",
+        "PS_CONTENT",
+        "SHARE_URL"
+      ]
+    }
+  ],
+  "categories": {
+    "basic": {
+      "name": "Basic",
+      "description": "Simple, versatile templates for general use"
+    },
+    "editorial": {
+      "name": "Editorial",
+      "description": "Rich content layouts for media and publishing"
+    },
+    "curation": {
+      "name": "Curation",
+      "description": "List-based templates for content roundups"
+    },
+    "saas": {
+      "name": "SaaS",
+      "description": "Product-focused templates for software companies"
+    },
+    "personal": {
+      "name": "Personal",
+      "description": "Warm, conversational templates for personal touch"
+    }
+  },
+  "version": "1.0.0",
+  "lastUpdated": "2024-03-10"
+}

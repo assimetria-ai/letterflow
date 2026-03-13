@@ -1,0 +1,195 @@
+<mjml>
+  <mj-head>
+    <mj-title>Digest Newsletter</mj-title>
+    <mj-preview>Your weekly roundup of top stories and updates</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" />
+      <mj-text font-size="16px" color="#333333" line-height="24px" />
+      <mj-section padding="0" />
+    </mj-attributes>
+    <mj-style>
+      .digest-item { 
+        border-left: 3px solid #4a90e2; 
+        padding-left: 15px !important;
+        margin-bottom: 25px;
+      }
+      .digest-title { 
+        color: #1a1a1a; 
+        font-size: 18px; 
+        font-weight: 600; 
+        text-decoration: none;
+        line-height: 24px;
+      }
+      .digest-title:hover { color: #4a90e2; }
+      .digest-meta { 
+        color: #999999; 
+        font-size: 13px;
+      }
+      .section-header {
+        color: #4a90e2;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        border-bottom: 2px solid #4a90e2;
+        padding-bottom: 8px;
+        margin-bottom: 20px;
+      }
+      .footer-link { color: #666666; text-decoration: none; }
+    </mj-style>
+  </mj-head>
+  <mj-body background-color="#f5f5f5">
+    
+    <!-- Header -->
+    <mj-section background-color="#4a90e2" padding="40px 20px">
+      <mj-column>
+        <mj-text align="center" font-size="36px" font-weight="700" color="#ffffff" padding="0">
+          {{DIGEST_NAME}}
+        </mj-text>
+        <mj-text align="center" font-size="16px" color="#ffffff" padding="10px 0 0" font-weight="300">
+          {{DIGEST_SUBTITLE}}
+        </mj-text>
+        <mj-text align="center" font-size="14px" color="#d4e5f7" padding="15px 0 0">
+          {{ISSUE_DATE}} • Issue #{{ISSUE_NUMBER}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Intro -->
+    <mj-section background-color="#ffffff" padding="30px 20px">
+      <mj-column>
+        <mj-text font-size="18px" color="#666666" line-height="28px" padding="0">
+          {{INTRO_TEXT}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Top Stories Section -->
+    <mj-section background-color="#ffffff" padding="30px 20px 20px">
+      <mj-column>
+        <mj-text css-class="section-header">
+          🔥 TOP STORIES
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Story Item 1 -->
+    <mj-section background-color="#ffffff" padding="0 20px 20px">
+      <mj-column css-class="digest-item">
+        <mj-text padding="0 0 8px">
+          <a href="{{STORY_1_URL}}" class="digest-title">{{STORY_1_TITLE}}</a>
+        </mj-text>
+        <mj-text font-size="14px" color="#666666" padding="0 0 8px" line-height="22px">
+          {{STORY_1_SUMMARY}}
+        </mj-text>
+        <mj-text css-class="digest-meta" padding="0">
+          {{STORY_1_SOURCE}} • {{STORY_1_TIME}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Story Item 2 -->
+    <mj-section background-color="#ffffff" padding="0 20px 20px">
+      <mj-column css-class="digest-item">
+        <mj-text padding="0 0 8px">
+          <a href="{{STORY_2_URL}}" class="digest-title">{{STORY_2_TITLE}}</a>
+        </mj-text>
+        <mj-text font-size="14px" color="#666666" padding="0 0 8px" line-height="22px">
+          {{STORY_2_SUMMARY}}
+        </mj-text>
+        <mj-text css-class="digest-meta" padding="0">
+          {{STORY_2_SOURCE}} • {{STORY_2_TIME}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Story Item 3 -->
+    <mj-section background-color="#ffffff" padding="0 20px 30px">
+      <mj-column css-class="digest-item">
+        <mj-text padding="0 0 8px">
+          <a href="{{STORY_3_URL}}" class="digest-title">{{STORY_3_TITLE}}</a>
+        </mj-text>
+        <mj-text font-size="14px" color="#666666" padding="0 0 8px" line-height="22px">
+          {{STORY_3_SUMMARY}}
+        </mj-text>
+        <mj-text css-class="digest-meta" padding="0">
+          {{STORY_3_SOURCE}} • {{STORY_3_TIME}}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Trending Section -->
+    <mj-section background-color="#ffffff" padding="20px">
+      <mj-column>
+        <mj-text css-class="section-header">
+          📈 TRENDING
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#ffffff" padding="0 20px 20px">
+      <mj-column>
+        <mj-text padding="0 0 12px">
+          <strong>1.</strong> <a href="{{TREND_1_URL}}" class="digest-title">{{TREND_1_TITLE}}</a>
+        </mj-text>
+        <mj-text padding="0 0 12px">
+          <strong>2.</strong> <a href="{{TREND_2_URL}}" class="digest-title">{{TREND_2_TITLE}}</a>
+        </mj-text>
+        <mj-text padding="0 0 12px">
+          <strong>3.</strong> <a href="{{TREND_3_URL}}" class="digest-title">{{TREND_3_TITLE}}</a>
+        </mj-text>
+        <mj-text padding="0 0 12px">
+          <strong>4.</strong> <a href="{{TREND_4_URL}}" class="digest-title">{{TREND_4_TITLE}}</a>
+        </mj-text>
+        <mj-text padding="0">
+          <strong>5.</strong> <a href="{{TREND_5_URL}}" class="digest-title">{{TREND_5_TITLE}}</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Quick Bites Section -->
+    <mj-section background-color="#f9f9f9" padding="30px 20px 20px">
+      <mj-column>
+        <mj-text css-class="section-header">
+          ⚡ QUICK BITES
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#f9f9f9" padding="0 20px 30px">
+      <mj-column>
+        <mj-text padding="0 0 15px">
+          • <strong>{{BITE_1_TITLE}}</strong> — {{BITE_1_TEXT}} 
+          <a href="{{BITE_1_URL}}" style="color: #4a90e2; text-decoration: none;">Read →</a>
+        </mj-text>
+        <mj-text padding="0 0 15px">
+          • <strong>{{BITE_2_TITLE}}</strong> — {{BITE_2_TEXT}} 
+          <a href="{{BITE_2_URL}}" style="color: #4a90e2; text-decoration: none;">Read →</a>
+        </mj-text>
+        <mj-text padding="0">
+          • <strong>{{BITE_3_TITLE}}</strong> — {{BITE_3_TEXT}} 
+          <a href="{{BITE_3_URL}}" style="color: #4a90e2; text-decoration: none;">Read →</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section background-color="#ffffff" padding="30px 20px">
+      <mj-column>
+        <mj-divider border-width="1px" border-color="#e0e0e0" padding="0 0 20px" />
+        <mj-text align="center" font-size="14px" color="#666666" padding="0 0 15px">
+          Thanks for reading! See you next {{FREQUENCY}}.
+        </mj-text>
+        <mj-text align="center" font-size="12px" color="#999999" padding="0">
+          © {{CURRENT_YEAR}} {{COMPANY_NAME}}
+        </mj-text>
+        <mj-text align="center" font-size="12px" color="#999999" padding="10px 0 0">
+          <a href="{{UNSUBSCRIBE_URL}}" class="footer-link">Unsubscribe</a> | 
+          <a href="{{PREFERENCES_URL}}" class="footer-link">Manage Preferences</a> |
+          <a href="{{WEB_VERSION_URL}}" class="footer-link">View Online</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+  </mj-body>
+</mjml>
