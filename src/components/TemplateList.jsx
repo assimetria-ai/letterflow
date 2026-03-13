@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import DOMPurify from 'dompurify';
 
 const CATEGORY_COLORS = {
   general: 'bg-gray-100 text-gray-700',
@@ -193,7 +194,7 @@ const TemplateList = () => {
                     className="p-4 text-xs transform scale-[0.6] origin-top-left w-[166%] h-[166%]"
                     dangerouslySetInnerHTML={{
                       __html: t.htmlContent
-                        ? t.htmlContent.slice(0, 500) + (t.htmlContent.length > 500 ? '...' : '')
+                        ? DOMPurify.sanitize(t.htmlContent.slice(0, 500) + (t.htmlContent.length > 500 ? '...' : ''))
                         : '<p style="color: #ccc; text-align: center; padding-top: 40px;">Empty template</p>'
                     }}
                   />
@@ -313,7 +314,7 @@ const TemplateList = () => {
                 )}
                 <div
                   className="p-4"
-                  dangerouslySetInnerHTML={{ __html: previewTemplate.htmlContent || '<p style="color:#999;text-align:center;padding:40px;">No content</p>' }}
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(previewTemplate.htmlContent || '<p style="color:#999;text-align:center;padding:40px;">No content</p>') }}
                 />
               </div>
             </div>

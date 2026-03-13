@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import DOMPurify from 'dompurify';
 
 const PREVIEW_DEVICES = [
   { key: 'desktop', label: 'Desktop', width: '100%', maxWidth: '680px' },
@@ -91,7 +92,7 @@ const TemplatePreview = ({ htmlContent, variables = [] }) => {
           {/* Email content */}
           <div
             className="template-preview-content"
-            dangerouslySetInnerHTML={{ __html: resolvedHtml }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(resolvedHtml) }}
           />
         </div>
       </div>
