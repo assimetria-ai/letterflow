@@ -12,7 +12,7 @@ exports.up = async function (db) {
 
     CREATE TABLE IF NOT EXISTS usage_events (
       id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-      user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       created_at TIMESTAMPTZ DEFAULT NOW(),
       service VARCHAR(50) NOT NULL,
       operation VARCHAR(100) NOT NULL,
@@ -36,7 +36,7 @@ exports.up = async function (db) {
   await db.none(`
     CREATE TABLE IF NOT EXISTS usage_summary (
       id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-      user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       date DATE NOT NULL,
       service VARCHAR(50) NOT NULL,
       total_requests INTEGER DEFAULT 0,
@@ -53,7 +53,7 @@ exports.up = async function (db) {
   // User cost budget/limits
   await db.none(`
     CREATE TABLE IF NOT EXISTS user_cost_limits (
-      user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+      user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
       monthly_limit_usd NUMERIC(10, 2) DEFAULT 100,
       daily_limit_usd NUMERIC(10, 2) DEFAULT 10,
       alerts_enabled BOOLEAN DEFAULT TRUE,
