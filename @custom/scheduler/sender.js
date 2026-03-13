@@ -163,9 +163,9 @@ async function sendSingleEmail(transporter, newsletter, delivery, results) {
     let htmlContent = newsletter.htmlContent;
     let plainContent = newsletter.plainContent || stripHtml(newsletter.htmlContent);
     
-    // Replace personalization tokens
-    htmlContent = personalizeContent(htmlContent, subscriber);
-    plainContent = personalizeContent(plainContent, subscriber);
+    // Replace personalization tokens (escape for HTML, raw for plain text)
+    htmlContent = personalizeContent(htmlContent, subscriber, { isHtml: true });
+    plainContent = personalizeContent(plainContent, subscriber, { isHtml: false });
     
     // Add tracking pixel to HTML
     htmlContent += `<img src="${trackingPixelUrl}" width="1" height="1" alt="" />`;
@@ -222,16 +222,36 @@ async function sendSingleEmail(transporter, newsletter, delivery, results) {
 }
 
 /**
+ * HTML-escape a string to prevent HTML injection
+ * @param {string} str - Raw string
+ * @returns {string} Escaped string safe for HTML embedding
+ */
+function escapeHtml(str) {
+  if (!str) return str;
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/**
  * Personalize email content with subscriber data
  * @param {string} content - Email content
  * @param {Object} subscriber - Subscriber data
+ * @param {Object} [options] - Options
+ * @param {boolean} [options.isHtml=true] - Whether content is HTML (applies escaping)
  * @returns {string} Personalized content
  */
-function personalizeContent(content, subscriber) {
+function personalizeContent(content, subscriber, options = {}) {
+  const isHtml = options.isHtml !== false;
+  const escape = isHtml ? escapeHtml : (s) => s;
+  
   return content
-    .replace(/\{\{first_name\}\}/gi, subscriber.name?.split(' ')[0] || 'there')
-    .replace(/\{\{name\}\}/gi, subscriber.name || 'Subscriber')
-    .replace(/\{\{email\}\}/gi, subscriber.email);
+    .replace(/\{\{first_name\}\}/gi, escape(subscriber.name?.split(' ')[0] || 'there'))
+    .replace(/\{\{name\}\}/gi, escape(subscriber.name || 'Subscriber'))
+    .replace(/\{\{email\}\}/gi, escape(subscriber.email));
 }
 
 /**
