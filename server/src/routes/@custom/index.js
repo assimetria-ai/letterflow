@@ -19,5 +19,6 @@ router.use(require('../../api/@custom/newsletters'))
 router.use(require('../../api/@custom/templates'))
 router.use(require('../../api/@custom/ab-tests'))
 router.use(require('../../api/@custom/automations'))
+router.use(require('../../api/@custom/subscribers'))
 
 module.exports = router

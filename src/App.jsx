@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import NewsletterEditor from './components/NewsletterEditor';
 import NewsletterList from './components/NewsletterList';
 import SubscriberImport from './components/SubscriberImport';
+import ImportExport from './components/ImportExport';
 import TemplateEditor from './components/TemplateEditor';
 import TemplateList from './components/TemplateList';
 import ABTestManager from './components/ABTestManager';
@@ -18,6 +19,7 @@ function App() {
           <Route path="/newsletters/new" element={<NewsletterEditor />} />
           <Route path="/newsletters/:id/edit" element={<NewsletterEditor />} />
           <Route path="/subscribers/import" element={<SubscriberImport />} />
+          <Route path="/import-export" element={<ImportExport />} />
           <Route path="/templates" element={<TemplateList />} />
           <Route path="/templates/new" element={<TemplateEditor />} />
           <Route path="/templates/:id/edit" element={<TemplateEditor />} />
