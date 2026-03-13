@@ -59,6 +59,9 @@ COPY server/src/ ./server/src/
 COPY server/scripts/ ./server/scripts/
 COPY server/package*.json ./server/
 
+# Custom modules (referenced by server via ../../@custom)
+COPY @custom/ ./@custom/
+
 # Built frontend assets (served by Express as static files or a CDN)
 # Server looks for static files at server/src/../public = server/public
 COPY --from=client-build /app/client/dist ./server/public
