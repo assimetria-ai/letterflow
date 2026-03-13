@@ -440,5 +440,7 @@ module.exports = {
   generateUnsubscribeToken,
   verifyUnsubscribeToken,
   generateTrackingToken,
-  verifyTrackingToken
+  verifyTrackingToken,
+  escapeHtml,
+  personalizeContent
 };
