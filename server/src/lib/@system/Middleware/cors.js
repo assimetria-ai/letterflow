@@ -20,15 +20,15 @@ function isOriginAllowed(origin) {
 
 const corsOptions = {
   origin(origin, callback) {
-    if (!origin || isOriginAllowed(origin)) {
+    if (isOriginAllowed(origin)) {
       callback(null, true)
     } else {
-      callback(null, false)
+      callback(new Error(`CORS: origin '${origin}' not allowed`))
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'X-CSRF-Token'],
   exposedHeaders: ['X-Total-Count', 'X-Request-Id'],
   maxAge: 600, // preflight cache 10 min
 }
