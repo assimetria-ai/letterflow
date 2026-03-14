@@ -24,6 +24,7 @@ const app = express()
 app.get('/health', (_req, res) => res.status(200).json({ status: 'ok' }))
 app.get('/api/health', (_req, res) => res.status(200).json({ status: 'ok' }))
 app.get('/healthz', (_req, res) => res.status(200).json({ status: 'ok' }))
+app.get('/api/uptime', (_req, res) => res.json({ status: 'ok', uptime: process.uptime(), timestamp: new Date().toISOString() }))
 
 // ── Public email endpoints (no CORS/CSRF/auth — clicked from email clients) ──
 // Task #11186: HMAC-signed unsubscribe and tracking tokens
@@ -90,6 +91,10 @@ app.use(compression())
 // ── Serve React SPA in production (BEFORE CORS — browser navigations carry no Origin) ──
 const publicDir = path.join(__dirname, '..', 'public')
 if (process.env.NODE_ENV === 'production' && fs.existsSync(publicDir)) {
+  const landingFile = path.join(publicDir, 'landing.html')
+  if (fs.existsSync(landingFile)) {
+    app.get('/', (_req, res) => res.sendFile(landingFile))
+  }
   app.use(express.static(publicDir, { index: false }))
 }
 
@@ -119,17 +124,7 @@ app.use('/api', customRoutes)
 
 // SPA catch-all: serve index.html for all non-API routes (client-side routing)
 if (process.env.NODE_ENV === 'production' && fs.existsSync(publicDir)) {
-  // Landing page: serve landing.html at root instead of SPA shell (task #12051)
-if (process.env.NODE_ENV === 'production' && fs.existsSync(publicDir)) {
-  const landingFile = path.join(publicDir, 'landing.html')
-  if (fs.existsSync(landingFile)) {
-    app.get('/', (_req, res) => {
-      res.sendFile(landingFile)
-    })
-  }
-}
-
-app.get('*', (req, res) => {
+  app.get('*', (req, res) => {
     res.sendFile(path.join(publicDir, 'index.html'))
   })
 } else {
