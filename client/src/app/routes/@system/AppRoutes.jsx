@@ -96,6 +96,21 @@ const UXPatternsPage = lazy(() =>
 const DashboardPage = lazy(() =>
   import('../../pages/app/@custom/DashboardPage').then((m) => ({ default: m.DashboardPage }))
 )
+const SubscribersPage = lazy(() =>
+  import('../../pages/app/@custom/SubscribersPage').then((m) => ({ default: m.SubscribersPage }))
+)
+const AnalyticsPage = lazy(() =>
+  import('../../pages/app/@custom/AnalyticsPage').then((m) => ({ default: m.AnalyticsPage }))
+)
+const NewsletterListPage = lazy(() =>
+  import('../../pages/app/@custom/NewsletterListPage').then((m) => ({ default: m.NewsletterListPage }))
+)
+const NewsletterEditorPage = lazy(() =>
+  import('../../pages/app/@custom/NewsletterEditorPage').then((m) => ({ default: m.NewsletterEditorPage }))
+)
+const ImportExportPage = lazy(() =>
+  import('../../pages/app/@custom/ImportExportPage').then((m) => ({ default: m.ImportExportPage }))
+)
 const UXDemoPage = lazy(() =>
   import('../../pages/app/@system/UXDemoPage').then((m) => ({ default: m.UXDemoPage }))
 )
@@ -280,6 +295,56 @@ export function AppRoutes() {
           element={
             <ProtectedRoute>
               <MobileResponsiveDemo />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Newsletter pages (Letterflow @custom) */}
+        <Route
+          path="/app/newsletters"
+          element={
+            <ProtectedRoute>
+              <NewsletterListPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/app/newsletters/new"
+          element={
+            <ProtectedRoute>
+              <NewsletterEditorPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/app/newsletters/:id/edit"
+          element={
+            <ProtectedRoute>
+              <NewsletterEditorPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/app/subscribers"
+          element={
+            <ProtectedRoute>
+              <SubscribersPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/app/analytics"
+          element={
+            <ProtectedRoute>
+              <AnalyticsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/app/import-export"
+          element={
+            <ProtectedRoute>
+              <ImportExportPage />
             </ProtectedRoute>
           }
         />
