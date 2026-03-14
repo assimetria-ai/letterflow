@@ -111,6 +111,9 @@ const NewsletterEditorPage = lazy(() =>
 const ImportExportPage = lazy(() =>
   import('../../pages/app/@custom/ImportExportPage').then((m) => ({ default: m.ImportExportPage }))
 )
+const SubscriberImportPage = lazy(() =>
+  import('../../pages/app/@custom/SubscriberImportPage').then((m) => ({ default: m.SubscriberImportPage }))
+)
 const UXDemoPage = lazy(() =>
   import('../../pages/app/@system/UXDemoPage').then((m) => ({ default: m.UXDemoPage }))
 )
@@ -337,6 +340,14 @@ export function AppRoutes() {
           element={
             <ProtectedRoute>
               <AnalyticsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/app/subscribers/import"
+          element={
+            <ProtectedRoute>
+              <SubscriberImportPage />
             </ProtectedRoute>
           }
         />

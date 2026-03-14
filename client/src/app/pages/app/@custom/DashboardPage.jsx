@@ -20,6 +20,7 @@ import {
 } from '../../../components/@system/Dashboard'
 import { Button } from '../../../components/@system/ui/button'
 import { useAuthContext } from '../../../store/@system/auth'
+import { LETTERFLOW_NAV_ITEMS } from '../../../config/@custom/navigation'
 
 const recentNewsletters = [
   {
