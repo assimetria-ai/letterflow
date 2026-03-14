@@ -103,7 +103,7 @@ export function DashboardPage() {
   ]
 
   return (
-    <DashboardLayout>
+    <DashboardLayout navItems={LETTERFLOW_NAV_ITEMS}>
       <DashboardLayout.Header
         title={`Welcome back, ${firstName}`}
         description="Here's how your newsletters are performing."

@@ -14,10 +14,10 @@ import {
   Users,
   X } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { Header } from '../../../components/@system/Header/Header'
-import { PageLayout } from '../../../components/@system/layout/PageLayout'
+import { DashboardLayout } from '../../../components/@system/Dashboard'
 import { cn } from '../../../lib/@system/utils'
 import { api } from '../../../lib/@system/api'
+import { LETTERFLOW_NAV_ITEMS } from '../../../config/@custom/navigation'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -230,18 +230,11 @@ export function EmailTrackingPage() {
   }
 
   return (
-    <PageLayout>
-      <Header />
-      <main className="container py-8">
-        {/* Page header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-              <Mail className="h-6 w-6" />
-              Email Tracking
-            </h1>
-            <p className="text-sm text-muted-foreground mt-0.5">Monitor transactional email delivery</p>
-          </div>
+    <DashboardLayout navItems={LETTERFLOW_NAV_ITEMS}>
+      <DashboardLayout.Header
+        title="Email Tracking"
+        description="Monitor transactional email delivery"
+        actions={
           <div className="flex items-center gap-2">
             <Link
               to="/app/emails/preview"
@@ -259,8 +252,9 @@ export function EmailTrackingPage() {
               Refresh
             </button>
           </div>
-        </div>
-
+        }
+      />
+      <DashboardLayout.Content>
         {/* Stats */}
         {stats && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
@@ -416,12 +410,12 @@ export function EmailTrackingPage() {
             </div>
           </div>
         )}
-      </main>
+      </DashboardLayout.Content>
 
       {/* Detail modal */}
       {selectedLog && (
         <EmailDetailModal log={selectedLog} onClose={() => setSelectedLog(null)} />
       )}
-    </PageLayout>
+    </DashboardLayout>
   )
 }

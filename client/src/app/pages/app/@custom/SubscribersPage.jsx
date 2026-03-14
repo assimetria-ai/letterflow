@@ -26,6 +26,7 @@ import {
 } from '../../../components/@system/Dashboard'
 import { Button } from '../../../components/@system/ui/button'
 import { useAuthContext } from '../../../store/@system/auth'
+import { LETTERFLOW_NAV_ITEMS } from '../../../config/@custom/navigation'
 
 // Mock data — will be replaced with API calls
 const MOCK_SUBSCRIBERS = [
@@ -98,15 +99,6 @@ export function SubscribersPage() {
   const bouncedCount = MOCK_SUBSCRIBERS.filter(s => s.status === 'bounced').length
   const unsubCount = MOCK_SUBSCRIBERS.filter(s => s.status === 'unsubscribed').length
 
-  const sidebarItems = [
-    { icon: 'Home', label: 'Dashboard', to: '/app' },
-    { icon: 'Mail', label: 'Newsletters', to: '/app/newsletters' },
-    { icon: 'Users', label: 'Subscribers', to: '/app/subscribers', active: true },
-    { icon: 'BarChart3', label: 'Analytics', to: '/app/analytics' },
-    { icon: 'Upload', label: 'Import/Export', to: '/app/import-export' },
-    { icon: 'Settings', label: 'Settings', to: '/app/settings' },
-  ]
-
   const toggleSort = (field) => {
     if (sortField === field) {
       setSortDir(d => d === 'asc' ? 'desc' : 'asc')
@@ -121,6 +113,7 @@ export function SubscribersPage() {
       title="Subscribers"
       subtitle={`${MOCK_SUBSCRIBERS.length.toLocaleString()} total subscribers`}
       productColor="#0EA5E9"
+      navItems={LETTERFLOW_NAV_ITEMS}
     >
       <DashboardLayout.Content>
         {/* Stats row */}

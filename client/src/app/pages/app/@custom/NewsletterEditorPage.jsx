@@ -20,9 +20,11 @@ import {
   Clock,
   Check,
 } from 'lucide-react'
+import { DashboardLayout } from '../../../components/@system/Dashboard'
 import { Button } from '../../../components/@system/ui/button'
 import { useAuthContext } from '../../../store/@system/auth'
 import { newslettersApi } from '../../../lib/@custom/newsletters'
+import { LETTERFLOW_NAV_ITEMS } from '../../../config/@custom/navigation'
 import DOMPurify from 'dompurify'
 import { marked } from 'marked'
 
@@ -246,14 +248,15 @@ export function NewsletterEditorPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
-        <div className="text-gray-500 text-lg">Loading editor...</div>
-      </div>
+      <DashboardLayout navItems={LETTERFLOW_NAV_ITEMS}>
+        <div className="flex items-center justify-center h-full text-gray-500 text-lg">Loading editor...</div>
+      </DashboardLayout>
     )
   }
 
   return (
-    <div className="h-screen flex flex-col bg-white">
+    <DashboardLayout navItems={LETTERFLOW_NAV_ITEMS} showSidebar={true}>
+    <div className="flex flex-col bg-white" style={{ height: 'calc(100vh - 64px)' }}>
       {/* Header */}
       <header className="border-b border-gray-200 px-4 py-3 flex items-center justify-between bg-white z-10">
         <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -426,5 +429,6 @@ export function NewsletterEditorPage() {
         </div>
       )}
     </div>
+    </DashboardLayout>
   )
 }

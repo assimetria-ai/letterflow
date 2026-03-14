@@ -21,6 +21,7 @@ import {
 } from '../../../components/@system/Dashboard'
 import { Button } from '../../../components/@system/ui/button'
 import { useAuthContext } from '../../../store/@system/auth'
+import { LETTERFLOW_NAV_ITEMS } from '../../../config/@custom/navigation'
 
 // Mock campaign data
 const MOCK_CAMPAIGNS = [
@@ -111,6 +112,7 @@ export function AnalyticsPage() {
       title="Analytics"
       subtitle="Track your newsletter performance"
       productColor="#0EA5E9"
+      navItems={LETTERFLOW_NAV_ITEMS}
     >
       <DashboardLayout.Content>
         {/* Time range selector */}

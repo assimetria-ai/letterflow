@@ -2,31 +2,17 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  Home,
-  Settings,
-  Activity,
-  CreditCard,
-  Mail,
   Upload,
   Download,
   FileText,
   History,
 } from 'lucide-react'
-import { Header } from '../../../components/@system/Header/Header'
-import { Sidebar, SidebarSection, SidebarItem } from '../../../components/@system/Sidebar/Sidebar'
+import { DashboardLayout } from '../../../components/@system/Dashboard'
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/@system/Card/Card'
 import { Button } from '../../../components/@system/ui/button'
 import { useAuthContext } from '../../../store/@system/auth'
 import { subscribersApi } from '../../../lib/@custom/subscribers'
-
-const NAV_ITEMS = [
-  { icon: Home, label: 'Dashboard', to: '/app' },
-  { icon: Mail, label: 'Newsletters', to: '/app/newsletters' },
-  { icon: Upload, label: 'Import/Export', to: '/app/import-export' },
-  { icon: Activity, label: 'Activity', to: '/app/activity' },
-  { icon: CreditCard, label: 'Billing', to: '/app/billing' },
-  { icon: Settings, label: 'Settings', to: '/app/settings' },
-]
+import { LETTERFLOW_NAV_ITEMS } from '../../../config/@custom/navigation'
 
 const TABS = [
   { id: 'import', label: 'Import Subscribers', icon: Upload },
@@ -39,46 +25,33 @@ export function ImportExportPage() {
   const [activeTab, setActiveTab] = useState('import')
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <Sidebar>
-        <SidebarSection>
-          {NAV_ITEMS.map((item) => (
-            <SidebarItem key={item.to} icon={item.icon} to={item.to}>
-              {item.label}
-            </SidebarItem>
-          ))}
-        </SidebarSection>
-      </Sidebar>
+    <DashboardLayout navItems={LETTERFLOW_NAV_ITEMS}>
+      <DashboardLayout.Header title="Import / Export" />
+      <DashboardLayout.Content>
+        {/* Tab bar */}
+        <div className="border-b border-border mb-6">
+          <nav className="flex gap-6">
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
+                  activeTab === tab.id
+                    ? 'border-sky-500 text-sky-600'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </nav>
+        </div>
 
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Header title="Import / Export" />
-
-        <main className="flex-1 overflow-auto p-6">
-          {/* Tab bar */}
-          <div className="border-b border-gray-200 mb-6">
-            <nav className="flex gap-6">
-              {TABS.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
-                    activeTab === tab.id
-                      ? 'border-sky-500 text-sky-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </nav>
-          </div>
-
-          {activeTab === 'import' && <ImportTab />}
-          {activeTab === 'export' && <ExportTab />}
-          {activeTab === 'history' && <HistoryTab />}
-        </main>
-      </div>
-    </div>
+        {activeTab === 'import' && <ImportTab />}
+        {activeTab === 'export' && <ExportTab />}
+        {activeTab === 'history' && <HistoryTab />}
+      </DashboardLayout.Content>
+    </DashboardLayout>
   )
 }
 
