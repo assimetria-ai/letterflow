@@ -2,18 +2,15 @@ const cors = require('cors')
 
 const ALLOWED_ORIGINS = [
   process.env.APP_URL,
+  process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : null,
   'http://localhost:5173',
   'http://localhost:3000',
 ].filter(Boolean)
 
 function isOriginAllowed(origin) {
-  // Allow no-origin requests in ALL environments. No-origin requests come from:
-  //   - Direct browser navigations (typing URL, bookmarks)
-  //   - curl, Postman, server-to-server calls
-  //   - Same-origin requests (some browsers omit Origin for same-origin)
-  // CSRF protection is handled by the X-CSRF-Token header (csrf middleware),
-  // not by CORS origin checking. Blocking no-origin breaks browser navigation
-  // if this middleware ever applies outside /api (e.g. during Express error paths).
+  // Allow no-origin requests (same-origin fetch, curl, Postman, server-to-server).
+  // CORS middleware is scoped to /api only, so browser navigation requests never
+  // reach this code. CSRF protection is handled by X-CSRF-Token header, not CORS.
   if (!origin) return true
 
   // Exact match only — wildcard subdomain matching removed (SEC-1500: attacker-registered subdomain risk)

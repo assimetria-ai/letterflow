@@ -102,6 +102,10 @@ if (process.env.NODE_ENV !== 'test') {
   app.use(pinoHttp({ logger }))
 }
 
+// CORS only for API routes — browser navigation (no Origin header) must reach
+// the static file handler without being blocked by the CORS middleware.
+app.use('/api', cors)
+
 // General rate limiting for all API routes (baseline DoS protection)
 app.use('/api', apiLimiter)
 
