@@ -3,13 +3,12 @@ import { lazy, Suspense } from 'react'
 import { useAuthContext } from '../../store/@system/auth'
 import { Spinner } from '../../components/@system/Loading/Spinner'
 import { ProtectedRoute } from '../../components/@system/ProtectedRoute/ProtectedRoute'
-import { customRoutes } from '../@custom/index'
 
 // @custom — to add custom routes, create @custom/AppRoutes.jsx that wraps or extends this component
 
 // Static / marketing pages (no auth required)
 const LandingPage = lazy(() =>
-  import('../../pages/static/@custom/LandingPage').then((m) => ({ default: m.LandingPage }))
+  import('../../pages/static/@system/LandingPage').then((m) => ({ default: m.LandingPage }))
 )
 const NotFoundPage = lazy(() =>
   import('../../pages/static/@system/NotFoundPage').then((m) => ({ default: m.NotFoundPage }))
@@ -93,27 +92,6 @@ const IntegrationsPage = lazy(() =>
 )
 const UXPatternsPage = lazy(() =>
   import('../../pages/app/@custom/UXPatternsPage').then((m) => ({ default: m.UXPatternsPage }))
-)
-const DashboardPage = lazy(() =>
-  import('../../pages/app/@custom/DashboardPage').then((m) => ({ default: m.DashboardPage }))
-)
-const SubscribersPage = lazy(() =>
-  import('../../pages/app/@custom/SubscribersPage').then((m) => ({ default: m.SubscribersPage }))
-)
-const AnalyticsPage = lazy(() =>
-  import('../../pages/app/@custom/AnalyticsPage').then((m) => ({ default: m.AnalyticsPage }))
-)
-const NewsletterListPage = lazy(() =>
-  import('../../pages/app/@custom/NewsletterListPage').then((m) => ({ default: m.NewsletterListPage }))
-)
-const NewsletterEditorPage = lazy(() =>
-  import('../../pages/app/@custom/NewsletterEditorPage').then((m) => ({ default: m.NewsletterEditorPage }))
-)
-const ImportExportPage = lazy(() =>
-  import('../../pages/app/@custom/ImportExportPage').then((m) => ({ default: m.ImportExportPage }))
-)
-const SubscriberImportPage = lazy(() =>
-  import('../../pages/app/@custom/SubscriberImportPage').then((m) => ({ default: m.SubscriberImportPage }))
 )
 const UXDemoPage = lazy(() =>
   import('../../pages/app/@system/UXDemoPage').then((m) => ({ default: m.UXDemoPage }))
@@ -216,15 +194,7 @@ export function AppRoutes() {
           path="/app"
           element={
             <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/app/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
+              <HomePage />
             </ProtectedRoute>
           }
         />
@@ -303,64 +273,6 @@ export function AppRoutes() {
           }
         />
 
-        {/* Newsletter pages (Letterflow @custom) */}
-        <Route
-          path="/app/newsletters"
-          element={
-            <ProtectedRoute>
-              <NewsletterListPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/app/newsletters/new"
-          element={
-            <ProtectedRoute>
-              <NewsletterEditorPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/app/newsletters/:id/edit"
-          element={
-            <ProtectedRoute>
-              <NewsletterEditorPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/app/subscribers"
-          element={
-            <ProtectedRoute>
-              <SubscribersPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/app/analytics"
-          element={
-            <ProtectedRoute>
-              <AnalyticsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/app/subscribers/import"
-          element={
-            <ProtectedRoute>
-              <SubscriberImportPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/app/import-export"
-          element={
-            <ProtectedRoute>
-              <ImportExportPage />
-            </ProtectedRoute>
-          }
-        />
-
         {/* Teams */}
         <Route
           path="/app/teams"
@@ -378,9 +290,6 @@ export function AppRoutes() {
             </ProtectedRoute>
           }
         />
-
-        {/* Custom routes (@custom) */}
-        {customRoutes}
 
         {/* 404 */}
         <Route path="*" element={<NotFoundPage />} />
