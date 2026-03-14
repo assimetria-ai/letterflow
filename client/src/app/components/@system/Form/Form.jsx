@@ -65,23 +65,4 @@ function Textarea({ className, error, ...props }) {
   )
 }
 
-function Form({ className, children, ...props }) {
-  return (
-    <form className={cn('space-y-4', className)} {...props}>
-      {children}
-    </form>
-  )
-}
-
-function FormLabel({ className, children, ...props }) {
-  return (
-    <Label className={cn('text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70', className)} {...props}>
-      {children}
-    </Label>
-  )
-}
-
-const FormInput = Input
-const FormTextarea = Textarea
-
-export { Form, FormField, FormLabel, FormInput, FormTextarea, Input, Textarea }
+export { FormField, Input, Textarea }
