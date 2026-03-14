@@ -93,6 +93,9 @@ const IntegrationsPage = lazy(() =>
 const UXPatternsPage = lazy(() =>
   import('../../pages/app/@custom/UXPatternsPage').then((m) => ({ default: m.UXPatternsPage }))
 )
+const DashboardPage = lazy(() =>
+  import('../../pages/app/@custom/DashboardPage').then((m) => ({ default: m.DashboardPage }))
+)
 const UXDemoPage = lazy(() =>
   import('../../pages/app/@system/UXDemoPage').then((m) => ({ default: m.UXDemoPage }))
 )
@@ -194,7 +197,15 @@ export function AppRoutes() {
           path="/app"
           element={
             <ProtectedRoute>
-              <HomePage />
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/app/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
             </ProtectedRoute>
           }
         />
