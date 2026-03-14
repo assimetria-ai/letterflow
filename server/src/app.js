@@ -90,7 +90,7 @@ app.use(compression())
 // ── Serve React SPA in production (BEFORE CORS — browser navigations carry no Origin) ──
 const publicDir = path.join(__dirname, '..', 'public')
 if (process.env.NODE_ENV === 'production' && fs.existsSync(publicDir)) {
-  app.use(express.static(publicDir))
+  app.use(express.static(publicDir, { index: false }))
 }
 
 // CORS only for API routes (browser navigations to static files don't need CORS)
