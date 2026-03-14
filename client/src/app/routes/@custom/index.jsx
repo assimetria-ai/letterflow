@@ -12,6 +12,11 @@ import { NewsletterListPage } from '../../pages/app/@custom/NewsletterListPage'
 import { NewsletterEditorPage } from '../../pages/app/@custom/NewsletterEditorPage'
 import { ImportExportPage } from '../../pages/app/@custom/ImportExportPage'
 import { ABTestPage } from '../../pages/app/@custom/ABTestPage'
+import { AnalyticsPage } from '../../pages/app/@custom/AnalyticsPage'
+import { SubscribersPage } from '../../pages/app/@custom/SubscribersPage'
+import { AutomationsPage } from '../../pages/app/@custom/AutomationsPage'
+import { LandingPagesPage } from '../../pages/app/@custom/LandingPagesPage'
+import { EmailSendingPage } from '../../pages/app/@custom/EmailSendingPage'
 import { PrivateRoute } from '@/app/components/@system/PrivateRoute/PrivateRoute'
 
 // @custom — add your product-specific routes here.
@@ -140,6 +145,51 @@ export const customRoutes = [
     element={
       <PrivateRoute>
         <ABTestPage />
+      </PrivateRoute>
+    }
+  />,
+  <Route
+    key="analytics"
+    path="/app/analytics"
+    element={
+      <PrivateRoute>
+        <AnalyticsPage />
+      </PrivateRoute>
+    }
+  />,
+  <Route
+    key="subscribers"
+    path="/app/subscribers"
+    element={
+      <PrivateRoute>
+        <SubscribersPage />
+      </PrivateRoute>
+    }
+  />,
+  <Route
+    key="automations"
+    path="/app/automations"
+    element={
+      <PrivateRoute>
+        <AutomationsPage />
+      </PrivateRoute>
+    }
+  />,
+  <Route
+    key="landing-pages"
+    path="/app/landing-pages"
+    element={
+      <PrivateRoute>
+        <LandingPagesPage />
+      </PrivateRoute>
+    }
+  />,
+  <Route
+    key="sending"
+    path="/app/sending"
+    element={
+      <PrivateRoute>
+        <EmailSendingPage />
       </PrivateRoute>
     }
   />,

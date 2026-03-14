@@ -15,14 +15,16 @@ import {
   Tag,
   TrendingUp,
   TrendingDown,
+  Trash2,
+  SendHorizonal,
+  X,
+  ChevronDown,
+  Layers,
 } from 'lucide-react'
 import {
   DashboardLayout,
   StatCard,
   StatCardGrid,
-  DataTable,
-  FiltersBar,
-  BulkActions,
 } from '../../../components/@system/Dashboard'
 import { Button } from '../../../components/@system/ui/button'
 import { useAuthContext } from '../../../store/@system/auth'
@@ -30,14 +32,20 @@ import { LETTERFLOW_NAV_ITEMS } from '../../../config/@custom/navigation'
 
 // Mock data — will be replaced with API calls
 const MOCK_SUBSCRIBERS = [
-  { id: 1, email: 'alice@example.com', name: 'Alice Johnson', status: 'active', source: 'Landing Page', subscribed: '2026-01-15', openRate: 62.3, tags: ['early-adopter', 'premium'] },
-  { id: 2, email: 'bob@startup.io', name: 'Bob Chen', status: 'active', source: 'Import', subscribed: '2026-02-01', openRate: 45.1, tags: ['tech'] },
-  { id: 3, email: 'carol@design.co', name: 'Carol Davis', status: 'active', source: 'API', subscribed: '2026-02-10', openRate: 71.8, tags: ['design', 'premium'] },
-  { id: 4, email: 'dan@corp.com', name: 'Dan Miller', status: 'unsubscribed', source: 'Landing Page', subscribed: '2026-01-20', openRate: 12.0, tags: [] },
-  { id: 5, email: 'eva@freelance.dev', name: 'Eva Park', status: 'active', source: 'Referral', subscribed: '2026-03-01', openRate: 55.9, tags: ['creator'] },
-  { id: 6, email: 'frank@news.org', name: 'Frank White', status: 'bounced', source: 'Import', subscribed: '2026-01-05', openRate: 0, tags: [] },
-  { id: 7, email: 'grace@agency.com', name: 'Grace Lee', status: 'active', source: 'Landing Page', subscribed: '2026-02-20', openRate: 48.3, tags: ['agency'] },
-  { id: 8, email: 'henry@startup.co', name: 'Henry Kim', status: 'active', source: 'API', subscribed: '2026-03-05', openRate: 67.2, tags: ['tech', 'early-adopter'] },
+  { id: 1,  email: 'alice@example.com',      name: 'Alice Johnson',    status: 'active',        source: 'Landing Page', subscribed: '2026-01-15', openRate: 62.3, tags: ['early-adopter', 'premium'],  segment: 'VIP' },
+  { id: 2,  email: 'bob@startup.io',          name: 'Bob Chen',         status: 'active',        source: 'Import',       subscribed: '2026-02-01', openRate: 45.1, tags: ['tech'],                       segment: 'Tech' },
+  { id: 3,  email: 'carol@design.co',         name: 'Carol Davis',      status: 'active',        source: 'API',          subscribed: '2026-02-10', openRate: 71.8, tags: ['design', 'premium'],          segment: 'VIP' },
+  { id: 4,  email: 'dan@corp.com',            name: 'Dan Miller',       status: 'unsubscribed',  source: 'Landing Page', subscribed: '2026-01-20', openRate: 12.0, tags: [],                             segment: 'General' },
+  { id: 5,  email: 'eva@freelance.dev',       name: 'Eva Park',         status: 'active',        source: 'Referral',     subscribed: '2026-03-01', openRate: 55.9, tags: ['creator'],                    segment: 'Creators' },
+  { id: 6,  email: 'frank@news.org',          name: 'Frank White',      status: 'bounced',       source: 'Import',       subscribed: '2026-01-05', openRate: 0,    tags: [],                             segment: 'General' },
+  { id: 7,  email: 'grace@agency.com',        name: 'Grace Lee',        status: 'active',        source: 'Landing Page', subscribed: '2026-02-20', openRate: 48.3, tags: ['agency'],                     segment: 'Agencies' },
+  { id: 8,  email: 'henry@startup.co',        name: 'Henry Kim',        status: 'active',        source: 'API',          subscribed: '2026-03-05', openRate: 67.2, tags: ['tech', 'early-adopter'],      segment: 'Tech' },
+  { id: 9,  email: 'iris@media.com',          name: 'Iris Thompson',    status: 'active',        source: 'Referral',     subscribed: '2026-03-08', openRate: 58.1, tags: ['media', 'premium'],           segment: 'VIP' },
+  { id: 10, email: 'jack@engineer.dev',       name: 'Jack Robinson',    status: 'active',        source: 'API',          subscribed: '2026-03-09', openRate: 43.7, tags: ['tech'],                       segment: 'Tech' },
+  { id: 11, email: 'karen@writer.io',         name: 'Karen Wilson',     status: 'active',        source: 'Landing Page', subscribed: '2026-02-14', openRate: 76.4, tags: ['creator', 'premium'],         segment: 'Creators' },
+  { id: 12, email: 'liam@venture.vc',         name: 'Liam Foster',      status: 'active',        source: 'Referral',     subscribed: '2026-01-28', openRate: 52.0, tags: ['investor'],                   segment: 'General' },
+  { id: 13, email: 'mia@design.studio',       name: 'Mia Santos',       status: 'unsubscribed',  source: 'Import',       subscribed: '2025-12-10', openRate: 8.4,  tags: ['design'],                     segment: 'General' },
+  { id: 14, email: 'noah@product.io',         name: 'Noah Adams',       status: 'active',        source: 'Landing Page', subscribed: '2026-03-11', openRate: 61.5, tags: ['tech', 'creator'],            segment: 'Creators' },
 ]
 
 const STATUS_OPTIONS = [
@@ -55,6 +63,15 @@ const SOURCE_OPTIONS = [
   { value: 'Referral', label: 'Referral' },
 ]
 
+const SEGMENT_OPTIONS = [
+  { value: 'all', label: 'All Segments' },
+  { value: 'VIP', label: 'VIP' },
+  { value: 'Tech', label: 'Tech' },
+  { value: 'Creators', label: 'Creators' },
+  { value: 'Agencies', label: 'Agencies' },
+  { value: 'General', label: 'General' },
+]
+
 function StatusBadge({ status }) {
   const styles = {
     active: 'bg-emerald-500/10 text-emerald-500',
@@ -68,12 +85,42 @@ function StatusBadge({ status }) {
   )
 }
 
+function BulkActionsBar({ selectedCount, onClear, onTag, onEmail, onDelete }) {
+  return (
+    <div className="flex items-center gap-3 rounded-lg border border-sky-500/30 bg-sky-500/5 px-4 py-2.5">
+      <span className="text-sm font-medium" style={{ color: '#0EA5E9' }}>
+        {selectedCount} selected
+      </span>
+      <div className="h-4 w-px bg-border" />
+      <Button variant="ghost" size="sm" className="h-7 gap-1.5 text-xs" onClick={onEmail}>
+        <SendHorizonal className="h-3.5 w-3.5" />
+        Send Email
+      </Button>
+      <Button variant="ghost" size="sm" className="h-7 gap-1.5 text-xs" onClick={onTag}>
+        <Tag className="h-3.5 w-3.5" />
+        Add Tag
+      </Button>
+      <Button variant="ghost" size="sm" className="h-7 gap-1.5 text-xs text-red-500 hover:text-red-500" onClick={onDelete}>
+        <Trash2 className="h-3.5 w-3.5" />
+        Delete
+      </Button>
+      <button
+        onClick={onClear}
+        className="ml-auto rounded p-1 hover:bg-muted"
+      >
+        <X className="h-3.5 w-3.5 text-muted-foreground" />
+      </button>
+    </div>
+  )
+}
+
 export function SubscribersPage() {
   const { user } = useAuthContext()
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [sourceFilter, setSourceFilter] = useState('all')
+  const [segmentFilter, setSegmentFilter] = useState('all')
   const [selectedIds, setSelectedIds] = useState([])
   const [sortField, setSortField] = useState('subscribed')
   const [sortDir, setSortDir] = useState('desc')
@@ -86,6 +133,7 @@ export function SubscribersPage() {
     }
     if (statusFilter !== 'all') result = result.filter(s => s.status === statusFilter)
     if (sourceFilter !== 'all') result = result.filter(s => s.source === sourceFilter)
+    if (segmentFilter !== 'all') result = result.filter(s => s.segment === segmentFilter)
     result.sort((a, b) => {
       const aVal = a[sortField]
       const bVal = b[sortField]
@@ -93,7 +141,7 @@ export function SubscribersPage() {
       return sortDir === 'asc' ? cmp : -cmp
     })
     return result
-  }, [search, statusFilter, sourceFilter, sortField, sortDir])
+  }, [search, statusFilter, sourceFilter, segmentFilter, sortField, sortDir])
 
   const activeCount = MOCK_SUBSCRIBERS.filter(s => s.status === 'active').length
   const bouncedCount = MOCK_SUBSCRIBERS.filter(s => s.status === 'bounced').length
@@ -107,6 +155,10 @@ export function SubscribersPage() {
       setSortDir('desc')
     }
   }
+
+  const allSelected = selectedIds.length === filtered.length && filtered.length > 0
+  const toggleAll = (e) => setSelectedIds(e.target.checked ? filtered.map(s => s.id) : [])
+  const toggleOne = (id, checked) => setSelectedIds(prev => checked ? [...prev, id] : prev.filter(i => i !== id))
 
   return (
     <DashboardLayout
@@ -144,10 +196,21 @@ export function SubscribersPage() {
           />
         </StatCardGrid>
 
+        {/* Bulk actions bar */}
+        {selectedIds.length > 0 && (
+          <BulkActionsBar
+            selectedCount={selectedIds.length}
+            onClear={() => setSelectedIds([])}
+            onEmail={() => {}}
+            onTag={() => {}}
+            onDelete={() => {}}
+          />
+        )}
+
         {/* Toolbar */}
         <div className="flex flex-wrap items-center gap-3">
           {/* Search */}
-          <div className="relative flex-1" style={{ minWidth: '200px', maxWidth: '360px' }}>
+          <div className="relative flex-1" style={{ minWidth: '200px', maxWidth: '320px' }}>
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
@@ -158,6 +221,19 @@ export function SubscribersPage() {
               style={{ '--tw-ring-color': '#0EA5E9' }}
             />
           </div>
+
+          {/* Segment filter */}
+          <div className="relative">
+            <Layers className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+            <select
+              value={segmentFilter}
+              onChange={e => setSegmentFilter(e.target.value)}
+              className="h-9 rounded-md border bg-background pl-8 pr-3 text-sm outline-none appearance-none"
+            >
+              {SEGMENT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            </select>
+          </div>
+
           {/* Status filter */}
           <select
             value={statusFilter}
@@ -166,6 +242,7 @@ export function SubscribersPage() {
           >
             {STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
+
           {/* Source filter */}
           <select
             value={sourceFilter}
@@ -174,9 +251,10 @@ export function SubscribersPage() {
           >
             {SOURCE_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
+
           <div className="ml-auto flex gap-2">
             <Button variant="outline" size="sm" onClick={() => navigate('/app/import-export')}>
-              <Upload className="mr-1.5 h-3.5 w-3.5" /> Import
+              <Upload className="mr-1.5 h-3.5 w-3.5" /> Import CSV
             </Button>
             <Button variant="outline" size="sm">
               <Download className="mr-1.5 h-3.5 w-3.5" /> Export
@@ -195,8 +273,8 @@ export function SubscribersPage() {
                 <th className="w-10 px-4 py-3 text-left">
                   <input
                     type="checkbox"
-                    checked={selectedIds.length === filtered.length && filtered.length > 0}
-                    onChange={e => setSelectedIds(e.target.checked ? filtered.map(s => s.id) : [])}
+                    checked={allSelected}
+                    onChange={toggleAll}
                     className="rounded"
                   />
                 </th>
@@ -204,6 +282,7 @@ export function SubscribersPage() {
                   <span className="inline-flex items-center gap-1">Subscriber <ArrowUpDown className="h-3 w-3" /></span>
                 </th>
                 <th className="px-4 py-3 text-left font-medium text-muted-foreground">Status</th>
+                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Segment</th>
                 <th className="px-4 py-3 text-left font-medium text-muted-foreground">Source</th>
                 <th className="cursor-pointer px-4 py-3 text-left font-medium text-muted-foreground" onClick={() => toggleSort('openRate')}>
                   <span className="inline-flex items-center gap-1">Open Rate <ArrowUpDown className="h-3 w-3" /></span>
@@ -217,12 +296,12 @@ export function SubscribersPage() {
             </thead>
             <tbody>
               {filtered.map(sub => (
-                <tr key={sub.id} className="border-b last:border-0 hover:bg-muted/30 transition-colors">
+                <tr key={sub.id} className={`border-b last:border-0 transition-colors ${selectedIds.includes(sub.id) ? 'bg-sky-500/5' : 'hover:bg-muted/30'}`}>
                   <td className="px-4 py-3">
                     <input
                       type="checkbox"
                       checked={selectedIds.includes(sub.id)}
-                      onChange={e => setSelectedIds(prev => e.target.checked ? [...prev, sub.id] : prev.filter(id => id !== sub.id))}
+                      onChange={e => toggleOne(sub.id, e.target.checked)}
                       className="rounded"
                     />
                   </td>
@@ -233,10 +312,15 @@ export function SubscribersPage() {
                     </div>
                   </td>
                   <td className="px-4 py-3"><StatusBadge status={sub.status} /></td>
+                  <td className="px-4 py-3">
+                    <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+                      {sub.segment}
+                    </span>
+                  </td>
                   <td className="px-4 py-3 text-muted-foreground">{sub.source}</td>
                   <td className="px-4 py-3">
                     <span className={sub.openRate > 50 ? 'text-emerald-500 font-medium' : sub.openRate > 25 ? 'text-foreground' : 'text-muted-foreground'}>
-                      {sub.openRate}%
+                      {sub.openRate > 0 ? `${sub.openRate}%` : '—'}
                     </span>
                   </td>
                   <td className="px-4 py-3">
@@ -260,7 +344,7 @@ export function SubscribersPage() {
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="px-4 py-12 text-center text-muted-foreground">
+                  <td colSpan={9} className="px-4 py-12 text-center text-muted-foreground">
                     No subscribers found matching your filters.
                   </td>
                 </tr>
@@ -269,12 +353,36 @@ export function SubscribersPage() {
           </table>
         </div>
 
-        {/* Pagination placeholder */}
+        {/* Pagination */}
         <div className="flex items-center justify-between text-sm text-muted-foreground">
           <p>Showing {filtered.length} of {MOCK_SUBSCRIBERS.length} subscribers</p>
           <div className="flex gap-1">
             <Button variant="outline" size="sm" disabled>Previous</Button>
             <Button variant="outline" size="sm" disabled>Next</Button>
+          </div>
+        </div>
+
+        {/* Segments overview */}
+        <div className="rounded-lg border bg-card p-5 shadow-sm">
+          <h3 className="mb-3 text-sm font-semibold text-foreground">Segments</h3>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+            {SEGMENT_OPTIONS.filter(s => s.value !== 'all').map(seg => {
+              const count = MOCK_SUBSCRIBERS.filter(s => s.segment === seg.value).length
+              return (
+                <button
+                  key={seg.value}
+                  onClick={() => setSegmentFilter(seg.value === segmentFilter ? 'all' : seg.value)}
+                  className={`rounded-md border px-3 py-2.5 text-left transition-colors hover:bg-muted/50 ${
+                    segmentFilter === seg.value ? 'border-sky-500/50 bg-sky-500/5' : ''
+                  }`}
+                >
+                  <p className="text-xs text-muted-foreground">{seg.label}</p>
+                  <p className="mt-0.5 text-lg font-bold" style={segmentFilter === seg.value ? { color: '#0EA5E9' } : {}}>
+                    {count}
+                  </p>
+                </button>
+              )
+            })}
           </div>
         </div>
       </DashboardLayout.Content>

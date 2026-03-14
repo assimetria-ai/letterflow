@@ -65,4 +65,23 @@ function Textarea({ className, error, ...props }) {
   )
 }
 
-export { FormField, Input, Textarea }
+function Form({ onSubmit, children, className }) {
+  return (
+    <form onSubmit={onSubmit} className={className}>
+      {children}
+    </form>
+  )
+}
+
+function FormLabel({ htmlFor, children, className }) {
+  return (
+    <Label htmlFor={htmlFor} className={cn('text-sm font-medium leading-none', className)}>
+      {children}
+    </Label>
+  )
+}
+
+const FormInput = Input
+const FormTextarea = Textarea
+
+export { FormField, Input, Textarea, Form, FormLabel, FormInput, FormTextarea }

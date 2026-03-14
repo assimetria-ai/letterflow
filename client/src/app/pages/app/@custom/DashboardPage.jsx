@@ -10,6 +10,13 @@ import {
   Plus,
   Upload,
   PieChart,
+  Zap,
+  Layout,
+  FlaskConical,
+  ShieldCheck,
+  ArrowRight,
+  CheckCircle,
+  Globe,
 } from 'lucide-react'
 import {
   DashboardLayout,
@@ -65,6 +72,74 @@ const recentNewsletters = [
   },
 ]
 
+// Overview cards for all 8 MVP features
+const FEATURE_CARDS = [
+  {
+    icon: Mail,
+    label: 'Newsletters',
+    value: '48 sent',
+    meta: '3 drafts',
+    color: '#0EA5E9',
+    to: '/app/newsletters',
+  },
+  {
+    icon: Users,
+    label: 'Subscribers',
+    value: '4,821',
+    meta: '+342 this month',
+    color: '#10B981',
+    to: '/app/subscribers',
+  },
+  {
+    icon: Send,
+    label: 'Email Sending',
+    value: '98.7%',
+    meta: 'delivery rate',
+    color: '#6366F1',
+    to: '/app/sending',
+  },
+  {
+    icon: BarChart3,
+    label: 'Analytics',
+    value: '39.2%',
+    meta: 'avg open rate',
+    color: '#F59E0B',
+    to: '/app/analytics',
+  },
+  {
+    icon: Zap,
+    label: 'Automations',
+    value: '3 active',
+    meta: '2,065 enrolled',
+    color: '#EF4444',
+    to: '/app/automations',
+  },
+  {
+    icon: Layout,
+    label: 'Landing Pages',
+    value: '3 live',
+    meta: '16.7% avg CVR',
+    color: '#8B5CF6',
+    to: '/app/landing-pages',
+  },
+  {
+    icon: FlaskConical,
+    label: 'A/B Tests',
+    value: '2 running',
+    meta: '+4.1% lift found',
+    color: '#06B6D4',
+    to: '/app/ab-tests',
+  },
+  {
+    icon: Upload,
+    label: 'Import/Export',
+    value: '14,200',
+    meta: 'records synced',
+    color: '#84CC16',
+    to: '/app/import-export',
+  },
+]
+
 export function DashboardPage() {
   const { user } = useAuthContext()
   const navigate = useNavigate()
@@ -84,7 +159,7 @@ export function DashboardPage() {
       icon: Upload,
       label: 'Import Subscribers',
       description: 'Upload a CSV file',
-      onClick: () => navigate('/app/subscribers/import'),
+      onClick: () => navigate('/app/import-export'),
     },
     {
       id: 'analytics',
@@ -120,7 +195,7 @@ export function DashboardPage() {
       />
 
       <DashboardLayout.Content>
-        {/* Stats */}
+        {/* Top stats */}
         <StatCardGrid>
           <StatCard
             label="Total Subscribers"
@@ -151,6 +226,37 @@ export function DashboardPage() {
             icon={Send}
           />
         </StatCardGrid>
+
+        {/* Feature overview grid — all 8 MVP features */}
+        <div>
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-base font-semibold text-foreground">Platform Overview</h2>
+            <span className="text-xs text-muted-foreground">All features at a glance</span>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {FEATURE_CARDS.map(card => (
+              <button
+                key={card.label}
+                onClick={() => navigate(card.to)}
+                className="group rounded-lg border bg-card p-4 text-left shadow-sm transition-all hover:shadow-md hover:border-opacity-80"
+                style={{ '--hover-color': card.color }}
+              >
+                <div className="mb-3 flex items-center justify-between">
+                  <div
+                    className="flex h-8 w-8 items-center justify-center rounded-md"
+                    style={{ backgroundColor: `${card.color}18` }}
+                  >
+                    <card.icon className="h-4 w-4" style={{ color: card.color }} />
+                  </div>
+                  <ArrowRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+                </div>
+                <p className="text-xs text-muted-foreground">{card.label}</p>
+                <p className="mt-0.5 text-base font-bold text-foreground">{card.value}</p>
+                <p className="mt-0.5 text-xs" style={{ color: card.color }}>{card.meta}</p>
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Main content area */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -219,6 +325,39 @@ export function DashboardPage() {
             <div>
               <h2 className="mb-3 text-base font-semibold text-foreground">Quick Actions</h2>
               <QuickActions actions={quickActions} layout="list" />
+            </div>
+
+            {/* Deliverability health */}
+            <div className="rounded-lg border bg-card p-4 shadow-sm">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm font-semibold text-foreground">Deliverability</h2>
+                <ShieldCheck className="h-4 w-4 text-emerald-500" />
+              </div>
+              <div className="space-y-2">
+                {[
+                  { label: 'Delivery Rate', value: '98.7%', ok: true },
+                  { label: 'Bounce Rate', value: '0.57%', ok: true },
+                  { label: 'SPF / DKIM', value: 'Valid', ok: true },
+                  { label: 'DMARC Policy', value: 'Quarantine', ok: false },
+                ].map(item => (
+                  <div key={item.label} className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">{item.label}</span>
+                    <span className={`flex items-center gap-1 font-medium ${item.ok ? 'text-emerald-500' : 'text-amber-500'}`}>
+                      <CheckCircle className="h-3 w-3" />
+                      {item.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/app/sending')}
+                className="mt-3 w-full justify-between text-xs text-muted-foreground"
+              >
+                View sending details
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Button>
             </div>
           </div>
         </div>
