@@ -8,27 +8,27 @@ const FAQ_ITEMS = [
   {
     question: 'What is included in the free plan?',
     answer:
-      'The free plan gives you access to up to 3 projects, basic analytics, and community support. No credit card required — you can upgrade at any time.' },
+      'The free plan includes up to 2,500 subscribers, unlimited newsletters, basic open/click analytics, and a hosted landing page. No credit card required — upgrade at any time.' },
   {
     question: 'Can I cancel my subscription at any time?',
     answer:
       'Yes. You can cancel your subscription from the Settings page at any point. You will keep access until the end of your current billing period and will not be charged again.' },
   {
+    question: 'Do you take a cut of my revenue?',
+    answer:
+      'No. Unlike some competitors, Letterflow never takes a percentage of your earnings. You keep 100% of what you make from your newsletter.' },
+  {
+    question: 'Can I import my subscribers from another platform?',
+    answer:
+      'Absolutely. You can bulk-import subscribers from CSV files, Mailchimp, Substack, Beehiiv, and other platforms. We also support exporting your data at any time — your list is always yours.' },
+  {
     question: 'Is my data secure?',
     answer:
-      'Absolutely. All data is encrypted in transit (TLS) and at rest. We use industry-standard security practices including bcrypt password hashing, JWT session management, and regular security audits.' },
-  {
-    question: 'Do you offer refunds?',
-    answer:
-      'We offer a 14-day money-back guarantee on all paid plans. If you are not satisfied for any reason, contact our support team within 14 days of your payment and we will issue a full refund.' },
-  {
-    question: 'Can I use this on multiple projects?',
-    answer:
-      'Yes. The Pro plan supports unlimited projects. The Starter (free) plan allows up to 3 active projects. Enterprise plans can be fully customised to your needs.' },
+      'Yes. All data is encrypted in transit (TLS) and at rest. We use industry-standard security practices including bcrypt password hashing, JWT session management, and regular security audits.' },
   {
     question: 'Is there an API I can integrate with?',
     answer:
-      'Yes. All plans include API access. You can manage your API keys from the API Keys page inside your dashboard. Full API documentation is available in our docs.' },
+      'Yes. All plans include API access for managing subscribers, sending newsletters, and pulling analytics. Full API documentation is available in your dashboard.' },
 ]
 
 
@@ -76,7 +76,7 @@ export function FAQ() {
         <p className="mt-2 sm:mt-3 text-sm sm:text-base text-muted-foreground">
           Everything you need to know. Can't find the answer{' '}
           <a
-            href="mailto:support@example.com"
+            href="mailto:support@letterflow.com"
             className="underline underline-offset-4 hover:text-primary"
           >
             Ask us directly.
