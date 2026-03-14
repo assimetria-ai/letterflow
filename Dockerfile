@@ -66,6 +66,9 @@ COPY @custom/ ./@custom/
 # Server looks for static files at server/src/../public = server/public
 COPY --from=client-build /app/client/dist ./server/public
 
+# Landing page: copy into server/public/ if present (task #12051)
+COPY landing.html ./server/public/landing.html
+
 # Copy @custom directory (product-specific code)
 COPY @custom/ ./@custom/
 
