@@ -7,6 +7,7 @@ import {
   Activity,
   CreditCard,
   Mail,
+  Upload,
   Plus,
   Trash2,
   Edit,
@@ -25,6 +26,7 @@ import { newslettersApi } from '../../../lib/@custom/newsletters'
 const NAV_ITEMS = [
   { icon: Home, label: 'Dashboard', to: '/app' },
   { icon: Mail, label: 'Newsletters', to: '/app/newsletters' },
+  { icon: Upload, label: 'Import/Export', to: '/app/import-export' },
   { icon: Activity, label: 'Activity', to: '/app/activity' },
   { icon: CreditCard, label: 'Billing', to: '/app/billing' },
   { icon: Settings, label: 'Settings', to: '/app/settings' },

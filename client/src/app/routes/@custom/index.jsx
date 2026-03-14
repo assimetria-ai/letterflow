@@ -10,6 +10,7 @@ import { TeamsPage } from '../../pages/app/@custom/TeamsPage'
 import { TeamDetailPage } from '../../pages/app/@custom/TeamDetailPage'
 import { NewsletterListPage } from '../../pages/app/@custom/NewsletterListPage'
 import { NewsletterEditorPage } from '../../pages/app/@custom/NewsletterEditorPage'
+import { ImportExportPage } from '../../pages/app/@custom/ImportExportPage'
 import { PrivateRoute } from '@/app/components/@system/PrivateRoute/PrivateRoute'
 
 // @custom — add your product-specific routes here.
@@ -120,6 +121,15 @@ export const customRoutes = [
     element={
       <PrivateRoute>
         <NewsletterEditorPage />
+      </PrivateRoute>
+    }
+  />,
+  <Route
+    key="import-export"
+    path="/app/import-export"
+    element={
+      <PrivateRoute>
+        <ImportExportPage />
       </PrivateRoute>
     }
   />,
