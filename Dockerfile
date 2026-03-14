@@ -65,12 +65,11 @@ COPY @custom/ ./@custom/
 # Built frontend assets (served by Express as static files or a CDN)
 # Server looks for static files at server/src/../public = server/public
 COPY --from=client-build /app/client/dist ./server/public
-
-# Landing page — served as public homepage for unauthenticated visitors
 COPY server/landing.html ./server/public/landing.html
 
+# Landing page — served as public homepage for unauthenticated visitors
 
-COPY landing.html ./server/public/landing.html
+
 
 # Copy @custom directory (product-specific code)
 COPY @custom/ ./@custom/
