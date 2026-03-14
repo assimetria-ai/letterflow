@@ -8,9 +8,12 @@ const ALLOWED_ORIGINS = [
 ].filter(Boolean)
 
 function isOriginAllowed(origin) {
-  // Allow no-origin requests (same-origin fetch, curl, Postman, server-to-server).
-  // CORS middleware is scoped to /api only, so browser navigation requests never
-  // reach this code. CSRF protection is handled by X-CSRF-Token header, not CORS.
+  // Allow no-origin requests in ALL environments.
+  // Requests without an Origin header come from: same-origin browser navigations (typing URL),
+  // curl/Postman, server-to-server calls, and health probes. These are NOT cross-origin
+  // browser requests, so CORS enforcement does not apply. Blocking them causes 500 errors
+  // on page loads when the SPA catch-all falls through to CORS middleware.
+  // CSRF protection is handled by X-CSRF-Token header, not CORS.
   if (!origin) return true
 
   // Exact match only — wildcard subdomain matching removed (SEC-1500: attacker-registered subdomain risk)
