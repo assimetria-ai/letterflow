@@ -47,11 +47,15 @@ const {
  * unauthenticated users from signing up or logging in.
  */
 const CSRF_EXEMPT_PATHS = [
-  '/users',            // POST — registration
-  '/sessions',         // POST — login
-  '/sessions/refresh', // POST — token rotation
-  '/auth/login',       // POST — login alias
-  '/auth/register',    // POST — registration alias
+  '/users',                    // POST — registration
+  '/sessions',                 // POST — login
+  '/sessions/refresh',         // POST — token rotation
+  '/users/password/request',   // POST — forgot password
+  '/users/password/reset',     // POST — reset password
+  '/users/email/verify',       // POST — email verification
+  '/users/email/verify/request', // POST — request email verification
+  '/auth/login',               // POST — login alias
+  '/auth/register',            // POST — registration alias
 ]
 
 const isExemptPath = (req) => {
