@@ -62,6 +62,8 @@ COPY server/package*.json ./server/
 # Server looks for static files at server/src/../public = server/public
 COPY --from=client-build /app/client/dist ./server/public
 
+# Favicon files (copied from client/public, not included in webpack build)
+COPY client/public/favicon* ./server/public/
 RUN chown -R appuser:appgroup /app
 USER appuser
 
