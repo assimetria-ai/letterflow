@@ -18,7 +18,7 @@
 
 # ── Shared base ───────────────────────────────────────────────────────────────
 FROM node:20-alpine AS base
-ARG CACHEBUST=9
+ARG CACHEBUST=1
 RUN apk add --no-cache tini postgresql-client
 
 # ── Stage 1: server production dependencies ───────────────────────────────────
@@ -56,33 +56,24 @@ COPY --from=server-deps /app/server/node_modules ./server/node_modules
 
 # Server source
 COPY server/src/ ./server/src/
-COPY server/scripts/ ./server/scripts/
 COPY server/package*.json ./server/
-
-# Custom modules (referenced by server via ../../@custom)
-COPY @custom/ ./@custom/
 
 # Built frontend assets (served by Express as static files or a CDN)
 # Server looks for static files at server/src/../public = server/public
 COPY --from=client-build /app/client/dist ./server/public
-COPY server/landing.html ./server/public/landing.html
 
-# Landing page — served as public homepage for unauthenticated visitors
-
-
-
-# Copy @custom directory (product-specific code)
-COPY @custom/ ./@custom/
-
-# Symlink server node_modules at root so @custom/ modules can resolve deps
-RUN ln -s /app/server/node_modules /app/node_modules
+# Landing page: copy landing.html into server/public/ so Express serves it at /
+# instead of the SPA shell. Real landing pages are synced from the OS brands
+# directory by sync-landing-pages.sh. The template ships a default fallback
+# that redirects to /app (the SPA). (task #12051)
+COPY landing.html ./server/public/landing.html
 
 RUN chown -R appuser:appgroup /app
 USER appuser
 
 ENV NODE_ENV=production \
     PORT=4000 \
-    STATIC_DIR=/app/server/public
+    STATIC_DIR=/app/public
 
 EXPOSE 4000
 

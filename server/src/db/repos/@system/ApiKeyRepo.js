@@ -1,59 +1,39 @@
-'use strict'
-
 const db = require('../../../lib/@system/PostgreSQL')
 
 const ApiKeyRepo = {
-  async findByUserId(user_id) {
+  async findAllByUser(userId) {
     return db.any(
-      `SELECT id, name, key_prefix, scopes, last_used_at, expires_at, is_active, created_at, updated_at
+      `SELECT id, user_id, name, key_prefix, last_used_at, expires_at, created_at
        FROM api_keys
        WHERE user_id = $1
        ORDER BY created_at DESC`,
-      [user_id],
+      [userId],
     )
   },
 
-  async findById(id) {
-    return db.oneOrNone('SELECT * FROM api_keys WHERE id = $1', [id])
+  async findByHash(keyHash) {
+    return db.oneOrNone('SELECT * FROM api_keys WHERE key_hash = $1', [keyHash])
   },
 
-  async findByKeyHash(key_hash) {
-    return db.oneOrNone(
-      `SELECT * FROM api_keys WHERE key_hash = $1 AND is_active = TRUE`,
-      [key_hash],
-    )
-  },
-
-  async create({ user_id, name, key_prefix, key_hash, scopes = [], expires_at = null }) {
+  async create({ userId, name, keyHash, keyPrefix, expiresAt }) {
     return db.one(
-      `INSERT INTO api_keys (user_id, name, key_prefix, key_hash, scopes, expires_at)
-       VALUES ($1, $2, $3, $4, $5, $6)
-       RETURNING id, name, key_prefix, scopes, expires_at, is_active, created_at`,
-      [user_id, name, key_prefix, key_hash, scopes, expires_at ?? null],
+      `INSERT INTO api_keys (user_id, name, key_hash, key_prefix, expires_at)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING id, user_id, name, key_prefix, expires_at, created_at`,
+      [userId, name, keyHash, keyPrefix, expiresAt ?? null],
     )
   },
 
   async touchLastUsed(id) {
-    return db.none(
-      `UPDATE api_keys SET last_used_at = now() WHERE id = $1`,
-      [id],
-    )
+    return db.none('UPDATE api_keys SET last_used_at = now() WHERE id = $1', [id])
   },
 
-  async revoke(id, user_id) {
-    return db.oneOrNone(
-      `UPDATE api_keys SET is_active = FALSE, updated_at = now()
-       WHERE id = $1 AND user_id = $2
-       RETURNING id`,
-      [id, user_id],
+  async deleteById(id, userId) {
+    const result = await db.result(
+      'DELETE FROM api_keys WHERE id = $1 AND user_id = $2',
+      [id, userId],
     )
-  },
-
-  async delete(id, user_id) {
-    return db.oneOrNone(
-      `DELETE FROM api_keys WHERE id = $1 AND user_id = $2 RETURNING id`,
-      [id, user_id],
-    )
+    return result.rowCount > 0
   },
 }
 
