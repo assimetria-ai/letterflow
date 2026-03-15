@@ -1,7 +1,7 @@
 // @custom — Letterflow landing page with newsletter-specific content
 // Replaces @system/LandingPage with product-specific hero, features, pricing, FAQ
 import { Link } from 'react-router-dom'
-import { ArrowRight, Check, Mail, Users, BarChart3, Zap, Layout, TestTube } from 'lucide-react'
+import { ArrowRight, Check, Mail, Users, BarChart3, Zap, Layout, TestTube, Send, ArrowDownUp } from 'lucide-react'
 import { Button } from '../../../components/@system/ui/button'
 import { Header } from '../../../components/@system/Header/Header'
 import { Footer } from '../../../components/@system/Footer/Footer'
@@ -23,9 +23,14 @@ const FEATURES = [
     description: 'Import, segment, and manage your audience. Tag subscribers, create smart segments, and keep your list clean automatically.',
   },
   {
+    icon: Send,
+    title: 'Email Sending',
+    description: 'Send campaigns via Resend or AWS SES. SPF/DKIM setup wizard, deliverability scoring, send-time optimization, and bounce/complaint handling with automatic list hygiene.',
+  },
+  {
     icon: BarChart3,
-    title: 'Campaign Analytics',
-    description: 'Track opens, clicks, and unsubscribes per campaign. Understand what resonates and optimize your content strategy.',
+    title: 'Analytics Dashboard',
+    description: 'Per-campaign metrics: open rate, click rate, unsubscribes, and growth trends. Subscriber growth chart, geo distribution, and top-performing content ranking over 7/30/90-day windows.',
   },
   {
     icon: Zap,
@@ -42,6 +47,11 @@ const FEATURES = [
     title: 'A/B Testing',
     description: 'Test subject lines, content, and send times. Let data drive your decisions and boost open rates.',
   },
+  {
+    icon: ArrowDownUp,
+    title: 'Import/Export',
+    description: 'One-click import from Mailchimp, Substack, ConvertKit, or CSV. Export full subscriber lists and campaign history as CSV/JSON. GDPR-compliant data portability.',
+  },
 ]
 
 const PLANS = [
@@ -49,7 +59,7 @@ const PLANS = [
     name: 'Starter',
     price: '$0',
     period: 'forever',
-    features: ['Up to 2,500 subscribers', 'Unlimited newsletters', 'Basic analytics', 'Landing page'],
+    features: ['Up to 2,500 subscribers', 'Unlimited newsletters', 'Basic analytics', 'Landing page', 'CSV import/export'],
     cta: 'Get Started Free',
     ctaLink: '/auth?tab=register',
     highlighted: false,
@@ -58,7 +68,7 @@ const PLANS = [
     name: 'Growth',
     price: '$19',
     period: '/month',
-    features: ['Up to 25,000 subscribers', 'Advanced analytics', 'Automation sequences', 'A/B testing', 'Custom domain', 'Priority support'],
+    features: ['Up to 25,000 subscribers', 'Advanced analytics', 'Automation sequences', 'A/B testing', 'Email deliverability tools', 'Custom domain', 'Priority support'],
     cta: 'Start Free Trial',
     ctaLink: '/auth?tab=register',
     highlighted: true,
@@ -105,7 +115,7 @@ export function LandingPage() {
           </p>
         </div>
 
-        <div className="grid gap-5 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map(({ icon: Icon, title, description }) => (
             <Card key={title} className="group transition-shadow hover:shadow-md">
               <CardContent className="pt-6">
