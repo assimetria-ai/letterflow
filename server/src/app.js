@@ -26,6 +26,20 @@ app.get('/api/health', (_req, res) => res.status(200).json({ status: 'ok' }))
 app.get('/healthz', (_req, res) => res.status(200).json({ status: 'ok' }))
 app.get('/api/uptime', (_req, res) => res.json({ status: 'ok', uptime: process.uptime(), timestamp: new Date().toISOString() }))
 
+// ── SEO: sitemap.xml & robots.txt (before CORS/SPA catch-all) ──
+const SITE_URL = process.env.SITE_URL || 'https://letterflow-production.up.railway.app'
+app.get('/sitemap.xml', (_req, res) => {
+  const pages = ['/', '/newsletters', '/templates', '/ab-tests', '/automations', '/subscribers/import', '/import-export']
+  const urls = pages.map(p => `  <url><loc>${SITE_URL}${p}</loc><changefreq>weekly</changefreq></url>`).join('\n')
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>`
+  res.set('Content-Type', 'application/xml')
+  res.send(xml)
+})
+app.get('/robots.txt', (_req, res) => {
+  res.set('Content-Type', 'text/plain')
+  res.send(`User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`)
+})
+
 // ── Public email endpoints (no CORS/CSRF/auth — clicked from email clients) ──
 // Task #11186: HMAC-signed unsubscribe and tracking tokens
 const { verifyUnsubscribeToken, verifyTrackingToken } = require('../../@custom/scheduler/sender')
