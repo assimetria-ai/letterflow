@@ -62,12 +62,6 @@ COPY server/package*.json ./server/
 # Server looks for static files at server/src/../public = server/public
 COPY --from=client-build /app/client/dist ./server/public
 
-# Landing page: copy landing.html into server/public/ so Express serves it at /
-# instead of the SPA shell. Real landing pages are synced from the OS brands
-# directory by sync-landing-pages.sh. The template ships a default fallback
-# that redirects to /app (the SPA). (task #12051)
-COPY landing.html ./server/public/landing.html
-
 RUN chown -R appuser:appgroup /app
 USER appuser
 
