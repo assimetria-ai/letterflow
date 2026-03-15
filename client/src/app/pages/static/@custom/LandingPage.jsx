@@ -9,7 +9,7 @@ import { Card, CardContent } from '../../../components/@system/Card/Card'
 import { OgMeta } from '../../../components/@system/OgMeta/OgMeta'
 import { HeroSection } from '../../../components/@custom/HeroSection/HeroSection'
 import { FAQ } from '../../../components/@custom/FAQ'
-import { info } from '../../../../config/@system/info'
+import { info } from '@/config'
 
 const FEATURES = [
   {

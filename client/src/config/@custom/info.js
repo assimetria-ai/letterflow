@@ -1,5 +1,4 @@
-// @custom — product-specific config override
-// Override any values from @system/info.ts here.
+// @custom — Letterflow product-specific config
 // This file is NEVER overwritten during template sync.
 
 export const customInfo = {
