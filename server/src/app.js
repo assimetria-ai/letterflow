@@ -122,6 +122,27 @@ app.use('/api', attachDatabase)
 app.use('/api', systemRoutes)
 app.use('/api', customRoutes)
 
+app.get('/robots.txt', (req, res) => {
+  const baseUrl = process.env.APP_URL || `${req.protocol}://${req.get('host')}`;
+  res.set('Content-Type', 'text/plain');
+  res.send(`User-agent: *\nAllow: /\n\nSitemap: ${baseUrl}/sitemap.xml\n`);
+});
+
+app.get('/sitemap.xml', (req, res) => {
+  const baseUrl = process.env.APP_URL || `${req.protocol}://${req.get('host')}`;
+  const now = new Date().toISOString().split('T')[0];
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>${baseUrl}/api/blog/sitemap.xml</loc>
+    <lastmod>${now}</lastmod>
+  </sitemap>
+</sitemapindex>`;
+  res.set('Content-Type', 'application/xml; charset=utf-8');
+  res.set('Cache-Control', 'public, max-age=3600');
+  res.send(xml);
+});
+
 // SPA catch-all: serve index.html for all non-API routes (client-side routing)
 if (process.env.NODE_ENV === 'production' && fs.existsSync(publicDir)) {
   app.get('*', (req, res) => {
