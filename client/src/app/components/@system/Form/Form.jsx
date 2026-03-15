@@ -65,4 +65,16 @@ function Textarea({ className, error, ...props }) {
   )
 }
 
-export { FormField, Input, Textarea }
+// Wrapper components expected by UserSettings
+function Form({ children, className, ...props }) {
+  return <form className={cn('space-y-6', className)} {...props}>{children}</form>
+}
+
+function FormLabel({ children, className, ...props }) {
+  return <Label className={cn('text-sm font-medium leading-none', className)} {...props}>{children}</Label>
+}
+
+const FormInput = Input
+const FormTextarea = Textarea
+
+export { FormField, Input, Textarea, Form, FormLabel, FormInput, FormTextarea }
