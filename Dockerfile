@@ -50,6 +50,9 @@ COPY --from=server-deps /app/server/node_modules ./server/node_modules
 COPY server/src/ ./server/src/
 COPY server/package*.json ./server/
 
+# Root @custom files (required by app.js ../../@custom imports)
+COPY @custom/ ./@custom/
+
 # Built frontend assets → nginx serves from here
 COPY --from=client-build /app/client/dist /usr/share/nginx/html
 
