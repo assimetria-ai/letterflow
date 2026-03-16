@@ -225,5 +225,3 @@ export function NotificationSettings({ user, onUpdate }) {
     </div>
   )
 }
-
-// Switch component imported from @/app/components/@system/Switch/Switch
