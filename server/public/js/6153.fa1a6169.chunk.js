@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkclient=self.webpackChunkclient||[]).push([[6153],{6153(s,e,n){n.d(e,{UserSessionsPage:()=>i});n(6540);var c=n(4848);function i(){return(0,c.jsxs)("div",{className:"p-6",children:[(0,c.jsx)("h1",{className:"text-2xl font-semibold mb-4",children:"UserSessions"}),(0,c.jsx)("p",{className:"text-muted-foreground",children:"Coming soon."})]})}}}]);
+//# sourceMappingURL=6153.fa1a6169.chunk.js.map
