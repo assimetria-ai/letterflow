@@ -68,9 +68,10 @@ const csrfProtection = (req, res, next) => {
     return next()
   }
 
-  // Skip CSRF for auth and webhook routes (no session to protect)
   // Check both full path (app-level mount) and stripped path (router-level mount)
   const fullPath = req.originalUrl || req.path
+
+  // Skip CSRF for auth and webhook routes (no session to protect)
   if (CSRF_EXEMPT_PATHS.some(p => fullPath.startsWith(p) || req.path.startsWith(p) || req.path.startsWith(p.replace('/api', '')))) {
     return next()
   }
