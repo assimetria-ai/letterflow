@@ -64,6 +64,10 @@ COPY --from=client-build /app/client/dist ./server/public
 
 # Favicon files (copied from client/public, not included in webpack build)
 COPY client/public/favicon* ./server/public/
+
+# Landing page (static HTML served at / in production)
+COPY landing.html ./server/public/landing.html
+
 RUN chown -R appuser:appgroup /app
 USER appuser
 
