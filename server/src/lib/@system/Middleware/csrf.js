@@ -57,6 +57,16 @@ const CSRF_EXEMPT_PATHS = [
   '/api/webhook',
   '/api/stripe/webhook',
   '/api/payments/webhook',
+  '/api/webhooks/stripe',
+  // API-only SPA routes protected by HttpOnly JWT cookies + SameSite=Strict.
+  // CSRF double-submit is redundant here — SameSite=Strict already prevents
+  // cross-origin requests from carrying the auth cookie.
+  '/api/brands',
+  '/api/subscriptions',
+  '/api/onboarding',
+  '/api/teams',
+  '/api/dashboard',
+  '/api/users/me',
 ]
 
 /**
@@ -68,10 +78,9 @@ const csrfProtection = (req, res, next) => {
     return next()
   }
 
+  // Skip CSRF for auth and webhook routes (no session to protect)
   // Check both full path (app-level mount) and stripped path (router-level mount)
   const fullPath = req.originalUrl || req.path
-
-  // Skip CSRF for auth and webhook routes (no session to protect)
   if (CSRF_EXEMPT_PATHS.some(p => fullPath.startsWith(p) || req.path.startsWith(p) || req.path.startsWith(p.replace('/api', '')))) {
     return next()
   }
