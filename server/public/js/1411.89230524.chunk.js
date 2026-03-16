@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkclient=self.webpackChunkclient||[]).push([[1411],{1411(e,s,c){c.d(s,{ApiAccessPage:()=>i});c(6540);var n=c(4848);function i(){return(0,n.jsxs)("div",{className:"p-6",children:[(0,n.jsx)("h1",{className:"text-2xl font-semibold mb-4",children:"ApiAccess"}),(0,n.jsx)("p",{className:"text-muted-foreground",children:"Coming soon."})]})}}}]);
+//# sourceMappingURL=1411.89230524.chunk.js.map

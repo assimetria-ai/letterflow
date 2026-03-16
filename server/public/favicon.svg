@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Letterflow favicon - icon only, brand color -->
+  <!-- Envelope with paper airplane flap + flow trail -->
+  <g fill="#0EA5E9">
+    <!-- Envelope body -->
+    <rect x="2" y="9" width="24" height="16" rx="2"/>
+    <!-- Envelope flap forming paper airplane shape -->
+    <polygon points="2,9 14,19 26,9"/>
+    <!-- Flow trail — the clever caveat -->
+    <path d="M26,13 C29,11 31,15 28,17 C25,19 29,22 32,20" stroke="#0EA5E9" stroke-width="2" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>
