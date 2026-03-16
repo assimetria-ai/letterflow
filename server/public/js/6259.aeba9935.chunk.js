@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkclient=self.webpackChunkclient||[]).push([[6259],{6259(s,e,a){a.d(e,{AnalyticsDashboardPage:()=>c});a(6540);var n=a(4848);function c(){return(0,n.jsxs)("div",{className:"p-6",children:[(0,n.jsx)("h1",{className:"text-2xl font-semibold mb-4",children:"AnalyticsDashboard"}),(0,n.jsx)("p",{className:"text-muted-foreground",children:"Coming soon."})]})}}}]);
+//# sourceMappingURL=6259.aeba9935.chunk.js.map
