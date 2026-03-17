@@ -1,44 +1,27 @@
 # ─────────────────────────────────────────────────────────────────────────────
-#  Product Template — Root Dockerfile  (multi-stage, production-ready)
-#
-#  Single container: nginx (port 80) fronts the Node.js backend (port 4000).
-#    Stage 1 (client-build): webpack frontend → client/dist/
-#    Stage 2 (server-deps):  Node.js production dependencies
-#    Stage 3 (runner):       nginx + Node.js + tini
-#
-#  Usage:
-#    docker build -t product-template .
-#    docker run -p 80:80 --env-file .env product-template
-#
-#  Build targets:
-#    --target client-build  → only webpack build (CI cache layer)
-#    --target server-deps   → only production server deps (CI cache layer)
-#    --target runner        → final production image (default)
+#  Assimetria Product — Dockerfile (nginx + Express dual-server, Vite build)
+#  Stage 1 (client-build): Vite frontend → client/dist/
+#  Stage 2 (server-deps):  Node.js production dependencies
+#  Stage 3 (runner):       nginx + Node.js + tini
 # ─────────────────────────────────────────────────────────────────────────────
 
 # ── Stage 1: client build ─────────────────────────────────────────────────────
 FROM node:20-alpine AS client-build
 WORKDIR /app/client
-
-# Manifests first → better layer caching
 COPY client/package*.json ./
-RUN npm ci --ignore-scripts
-
+RUN npm ci --ignore-scripts 2>/dev/null || npm install --legacy-peer-deps
 COPY client/ ./
-
 RUN npm run build
 
 # ── Stage 2: server production dependencies ───────────────────────────────────
 FROM node:20-alpine AS server-deps
 WORKDIR /app/server
-
 COPY server/package*.json ./
 RUN npm ci --omit=dev --ignore-scripts
 
 # ── Stage 3: final runner ─────────────────────────────────────────────────────
 FROM node:20-alpine AS runner
 
-ARG CACHEBUST=1
 RUN apk add --no-cache tini nginx postgresql-client
 
 WORKDIR /app
@@ -50,16 +33,13 @@ COPY --from=server-deps /app/server/node_modules ./server/node_modules
 COPY server/src/ ./server/src/
 COPY server/package*.json ./server/
 
-# Root @custom files (required by app.js ../../@custom imports)
-COPY @custom/ ./@custom/
-
 # Built frontend assets → nginx serves from here
 COPY --from=client-build /app/client/dist /usr/share/nginx/html
 
 # Landing page
 COPY landing.html /usr/share/nginx/html/landing.html
 
-# nginx config — Alpine uses http.d/ (not conf.d/) for server blocks
+# nginx config
 RUN rm -f /etc/nginx/http.d/default.conf 2>/dev/null || true
 COPY nginx.production.conf /etc/nginx/http.d/default.conf
 
