@@ -9,7 +9,7 @@ const logger = require('./lib/@system/Logger')
 const { cors, securityHeaders, csrfProtection, generateCsrfToken } = require('./lib/@system/Middleware')
 const { apiLimiter } = require('./lib/@system/RateLimit')
 const systemRoutes = require('./routes/@system')
-const customRoutes = require('./routes/@custom')
+let customRoutes; try { customRoutes = require('./routes/@custom') } catch(e) { console.warn('[app] @custom routes failed:', e.message); const express = require('express'); customRoutes = express.Router() }
 
 const app = express()
 
