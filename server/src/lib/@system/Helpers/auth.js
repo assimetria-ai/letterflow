@@ -256,6 +256,50 @@ function resetPasswordLock(userId) {
   _reset(_storeKey('pw', String(userId)))
 }
 
+// ── toPublicUser ──────────────────────────────────────────────────────────────
+
+/**
+ * Normalise a user DB row (or req.user object) to the public-safe shape
+ * returned by auth endpoints.  Strips sensitive fields (password_hash, etc.)
+ * and fills in safe defaults for optional columns so callers can always rely
+ * on the same object shape.
+ *
+ * Accepts both snake_case DB rows and camelCase req.user objects.
+ *
+ * Usage:
+ *   res.json({ user: toPublicUser(row) })
+ */
+function toPublicUser(user) {
+  return {
+    id:            user.id,
+    email:         user.email,
+    name:          user.name          ?? null,
+    role:          user.role          ?? 'user',
+    emailVerified: user.emailVerified ?? (user.email_verified ?? false),
+  }
+}
+
+// ── extractAccessToken ────────────────────────────────────────────────────────
+
+/**
+ * Extract the raw access token string from an incoming request.
+ * Checks, in order:
+ *   1. Authorization: Bearer <token> header (API clients / mobile apps)
+ *   2. access_token HttpOnly cookie (browser SPA)
+ *
+ * Returns the token string, or null if none is present.
+ * Does NOT verify the token — callers are responsible for verification.
+ */
+function extractAccessToken(req) {
+  const auth = req.headers['authorization'] ?? ''
+  if (auth.startsWith('Bearer ')) {
+    const token = auth.slice(7)
+    return token || null
+  }
+
+  return req.cookies?.access_token ?? null
+}
+
 // ── Role / ownership middleware ───────────────────────────────────────────────
 
 /**
@@ -318,6 +362,8 @@ module.exports = {
   recordPasswordFailure,
   isPasswordLocked,
   resetPasswordLock,
+  toPublicUser,
+  extractAccessToken,
   LOCKOUT_THRESHOLD,
   LOCKOUT_WINDOW_MS,
 }
