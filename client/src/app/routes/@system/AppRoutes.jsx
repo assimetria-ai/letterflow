@@ -1,20 +1,18 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useState, useEffect } from 'react'
 import { useAuthContext } from '../../store/@system/auth'
 import { Spinner } from '../../components/@system/Loading/Spinner'
 import { ProtectedRoute } from '../../components/@system/ProtectedRoute/ProtectedRoute'
 
-// @custom — to add custom routes, create @custom/AppRoutes.jsx that wraps or extends this component
-
 // Static / marketing pages (no auth required)
 const LandingPage = lazy(() =>
-  import('../../pages/static/@custom/LandingPage').then((m) => ({ default: m.LandingPage }))
+  import('../../pages/static/@system/LandingPage').then((m) => ({ default: m.LandingPage }))
 )
 const NotFoundPage = lazy(() =>
   import('../../pages/static/@system/NotFoundPage').then((m) => ({ default: m.NotFoundPage }))
 )
-const LoginPage = lazy(() =>
-  import('../../pages/static/@system/LoginPage').then((m) => ({ default: m.LoginPage }))
+const AuthPage = lazy(() =>
+  import('../../pages/static/@system/AuthPage').then((m) => ({ default: m.AuthPage }))
 )
 const RegisterPage = lazy(() =>
   import('../../pages/static/@system/RegisterPage').then((m) => ({ default: m.RegisterPage }))
@@ -69,6 +67,9 @@ const TwoFactorVerifyPage = lazy(() =>
 )
 
 // App pages (auth required)
+const BlogAdminPage = lazy(() =>
+  import('../../pages/app/@custom/BlogAdminPage').then((m) => ({ default: m.BlogAdminPage }))
+)
 const HomePage = lazy(() =>
   import('../../pages/app/@system/HomePage').then((m) => ({ default: m.HomePage }))
 )
@@ -90,44 +91,10 @@ const ApiKeysPage = lazy(() =>
 const IntegrationsPage = lazy(() =>
   import('../../pages/app/@system/IntegrationsPage').then((m) => ({ default: m.IntegrationsPage }))
 )
-const UXPatternsPage = lazy(() =>
-  import('../../pages/app/@custom/UXPatternsPage').then((m) => ({ default: m.UXPatternsPage }))
-)
-const UXDemoPage = lazy(() =>
-  import('../../pages/app/@system/UXDemoPage').then((m) => ({ default: m.UXDemoPage }))
-)
-const MobileResponsiveDemo = lazy(() =>
-  import('../../pages/app/@system/MobileResponsiveDemo').then((m) => ({ default: m.MobileResponsiveDemo }))
-)
-const ContentCalendarPage = lazy(() =>
-  import('../../pages/app/@custom/ContentCalendarPage').then((m) => ({ default: m.ContentCalendarPage }))
-)
-const HashtagResearchPage = lazy(() =>
-  import('../../pages/app/@custom/HashtagResearchPage').then((m) => ({ default: m.HashtagResearchPage }))
-)
-const PostsList = lazy(() =>
-  import('../../pages/app/@custom/PostsList').then((m) => ({ default: m.PostsList }))
-)
-const PostScheduler = lazy(() =>
-  import('../../pages/app/@custom/PostScheduler').then((m) => ({ default: m.PostScheduler }))
-)
-const ContentTemplatesPage = lazy(() =>
-  import('../../pages/app/@custom/ContentTemplatesPage')
-)
-const EngagementAnalyticsPage = lazy(() =>
-  import('../../pages/app/@custom/EngagementAnalyticsPage')
-)
-const AnalyticsDashboardPage = lazy(() =>
-  import('../../pages/app/@custom/AnalyticsDashboardPage').then((m) => ({ default: m.AnalyticsDashboardPage }))
-)
 
-// Teams pages
-const TeamsPage = lazy(() =>
-  import('../../pages/app/TeamsPage').then((m) => ({ default: m.TeamsPage }))
-)
-const TeamDetailPage = lazy(() =>
-  import('../../pages/app/TeamDetailPage').then((m) => ({ default: m.TeamDetailPage }))
-)
+// ─── Optional @custom routes ─────────────────────────────────────────────────
+// @system should not have hard dependencies on @custom — lazy load with fallback
+// Custom routes are loaded asynchronously and default to an empty array if unavailable.
 
 function PageFallback() {
   return (
@@ -146,18 +113,27 @@ function GuestRoute({ children }) {
 }
 
 export function AppRoutes() {
+  const [customRoutes, setCustomRoutes] = useState([])
+
+  // Load @custom routes if they exist, gracefully fall back to empty array
+  useEffect(() => {
+    import('../@custom')
+      .then((mod) => setCustomRoutes(mod.customRoutes ?? []))
+      .catch(() => setCustomRoutes([]))
+  }, [])
+
   return (
     <Suspense fallback={<PageFallback />}>
       <Routes>
         {/* Marketing / public */}
         <Route path="/" element={<LandingPage />} />
 
-        {/* Login — redirect to /app when already logged in */}
+        {/* Auth — redirect to /app when already logged in */}
         <Route
-          path="/login"
+          path="/auth"
           element={
             <GuestRoute>
-              <LoginPage />
+              <AuthPage />
             </GuestRoute>
           }
         />
@@ -203,7 +179,7 @@ export function AppRoutes() {
         <Route path="/register" element={<RegisterPage />} />
 
         {/* Aliases — redirect legacy paths */}
-        <Route path="/auth" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<Navigate to="/auth" replace />} />
         <Route path="/signup" element={<Navigate to="/register" replace />} />
 
         {/* Legacy /dashboard path → authenticated area */}
@@ -244,22 +220,6 @@ export function AppRoutes() {
           }
         />
         <Route
-          path="/app/ux-patterns"
-          element={
-            <ProtectedRoute>
-              <UXPatternsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/app/ux-demo"
-          element={
-            <ProtectedRoute>
-              <UXDemoPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/app/admin"
           element={
             <ProtectedRoute role="admin">
@@ -286,97 +246,16 @@ export function AppRoutes() {
         />
 
         <Route
-          path="/app/mobile-demo"
+          path="/app/admin/blog"
           element={
-            <ProtectedRoute>
-              <MobileResponsiveDemo />
+            <ProtectedRoute role="admin">
+              <BlogAdminPage />
             </ProtectedRoute>
           }
         />
 
-        {/* Content Calendar */}
-        <Route
-          path="/app/calendar"
-          element={
-            <ProtectedRoute>
-              <ContentCalendarPage />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Posts */}
-        <Route
-          path="/app/posts"
-          element={
-            <ProtectedRoute>
-              <PostsList />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/app/posts/new"
-          element={
-            <ProtectedRoute>
-              <PostScheduler />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Hashtag Research */}
-        <Route
-          path="/app/hashtags"
-          element={
-            <ProtectedRoute>
-              <HashtagResearchPage />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Content Templates */}
-        <Route
-          path="/app/templates"
-          element={
-            <ProtectedRoute>
-              <ContentTemplatesPage />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Engagement Analytics */}
-        <Route
-          path="/app/analytics"
-          element={
-            <ProtectedRoute>
-              <AnalyticsDashboardPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/app/analytics/engagement"
-          element={
-            <ProtectedRoute>
-              <EngagementAnalyticsPage />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Teams */}
-        <Route
-          path="/app/teams"
-          element={
-            <ProtectedRoute>
-              <TeamsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/app/teams/:id"
-          element={
-            <ProtectedRoute>
-              <TeamDetailPage />
-            </ProtectedRoute>
-          }
-        />
+        {/* Custom product routes */}
+        {customRoutes}
 
         {/* 404 */}
         <Route path="*" element={<NotFoundPage />} />

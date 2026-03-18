@@ -1,7 +1,7 @@
 // @system — user profile / settings page
 import { useState, useEffect, useCallback } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
-import { Home, Settings, Shield, CreditCard, Activity, Key, Save, Monitor, Trash2, Bell, Lock, User } from 'lucide-react'
+import { Home, Settings, Shield, CreditCard, Activity, Key, Save, Monitor, Trash2, Bell, Lock } from 'lucide-react'
 import { Header } from '../../../components/@system/Header/Header'
 import { Sidebar, SidebarSection, SidebarItem } from '../../../components/@system/Sidebar/Sidebar'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../../components/@system/Card/Card'
@@ -76,14 +76,6 @@ export function SettingsPage() {
   const [notifSaving, setNotifSaving] = useState(false)
   const [notifSuccess, setNotifSuccess] = useState(false)
   const [notifError, setNotifError] = useState('')
-
-  // Change password state
-  const [currentPassword, setCurrentPassword] = useState('')
-  const [newPassword, setNewPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [pwSaving, setPwSaving] = useState(false)
-  const [pwSuccess, setPwSuccess] = useState(false)
-  const [pwError, setPwError] = useState('')
 
   // Active sessions state
   const [sessions, setSessions] = useState([])
@@ -188,7 +180,7 @@ export function SettingsPage() {
             </p>
           </div>
           <SidebarSection>
-            {NAV_ITEMS.map(({ icon: Icon, label, to }) => (
+            {NAV_ITEMS.map(({ icon, label, to }) => (
               <Link to={to} key={to}>
                 <SidebarItem
                   icon={<Icon className="h-4 w-4" />}
