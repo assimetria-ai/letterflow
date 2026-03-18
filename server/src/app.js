@@ -42,7 +42,13 @@ app.get('/robots.txt', (_req, res) => {
 
 // ── Public email endpoints (no CORS/CSRF/auth — clicked from email clients) ──
 // Task #11186: HMAC-signed unsubscribe and tracking tokens
-const { verifyUnsubscribeToken, verifyTrackingToken } = require('../../@custom/scheduler/sender')
+let verifyUnsubscribeToken = () => null
+let verifyTrackingToken = () => null
+try {
+  const sender = require('../../@custom/scheduler/sender')
+  verifyUnsubscribeToken = sender.verifyUnsubscribeToken
+  verifyTrackingToken = sender.verifyTrackingToken
+} catch (_) { /* @custom not available in this environment */ }
 
 // 1×1 transparent GIF served for every tracking pixel request
 const TRACKING_PIXEL = Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64')

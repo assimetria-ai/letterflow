@@ -32,6 +32,7 @@ COPY --from=server-deps /app/server/node_modules ./server/node_modules
 # Server source
 COPY server/src/ ./server/src/
 COPY server/package*.json ./server/
+COPY @custom/ ./@custom/
 
 # Built frontend assets → nginx serves from here
 COPY --from=client-build /app/client/dist /usr/share/nginx/html
